@@ -1,4 +1,4 @@
-package com.eCommercoal.eCommercialWeb.Dto;
+package com.eCommercoal.eCommercialWeb.Entity;
 
 import jakarta.persistence.*;
 

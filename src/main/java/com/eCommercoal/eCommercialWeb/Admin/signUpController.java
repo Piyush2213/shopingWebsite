@@ -1,7 +1,6 @@
 package com.eCommercoal.eCommercialWeb.Admin;
 
-import com.eCommercoal.eCommercialWeb.Dto.admin;
-import com.eCommercoal.eCommercialWeb.Repository.adminRepository;
+import com.eCommercoal.eCommercialWeb.Entity.admin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class signUpController {
 
     @Autowired
-    private adminRepository adminRepository;
+    private com.eCommercoal.eCommercialWeb.Repository.adminRepository adminRepository;
     @PostMapping("/admin/signup")
     public ResponseEntity<?> createNewAdmin(@RequestBody adminSignUp adminSignUp) {
         String email = adminSignUp.getEmail();

@@ -1,7 +1,6 @@
 package com.eCommercoal.eCommercialWeb.Admin;
 
-import com.eCommercoal.eCommercialWeb.Dto.admin;
-import com.eCommercoal.eCommercialWeb.Repository.adminRepository;
+import com.eCommercoal.eCommercialWeb.Entity.admin;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class adminLoginController {
     @Autowired
-    private adminRepository adminRepository;
+    private com.eCommercoal.eCommercialWeb.Repository.adminRepository adminRepository;
     @PostMapping("/admin/login")
     public ResponseEntity<?> adminLogin(@RequestBody adminLogin request) {
         if (request.getToken() != null) {

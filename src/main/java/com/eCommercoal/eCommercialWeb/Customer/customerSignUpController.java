@@ -1,6 +1,5 @@
 package com.eCommercoal.eCommercialWeb.Customer;
-import com.eCommercoal.eCommercialWeb.Dto.customer;
-import com.eCommercoal.eCommercialWeb.Repository.customerRepository;
+import com.eCommercoal.eCommercialWeb.Entity.customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class customerSignUpController {
     @Autowired
-    private customerRepository customerRepository;
+    private com.eCommercoal.eCommercialWeb.Repository.customerRepository customerRepository;
     @PostMapping("/customer/signup")
     public ResponseEntity<?> createNewEmployee(@RequestBody customerSignUp customerSignUp) {
         String email = customerSignUp.getEmail();

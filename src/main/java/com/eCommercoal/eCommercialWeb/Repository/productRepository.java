@@ -1,5 +1,5 @@
 package com.eCommercoal.eCommercialWeb.Repository;
-import com.eCommercoal.eCommercialWeb.Dto.product;
+import com.eCommercoal.eCommercialWeb.Entity.product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

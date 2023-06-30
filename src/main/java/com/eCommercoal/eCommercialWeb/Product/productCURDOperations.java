@@ -1,9 +1,7 @@
 package com.eCommercoal.eCommercialWeb.Product;
 
-import com.eCommercoal.eCommercialWeb.Dto.admin;
-import com.eCommercoal.eCommercialWeb.Dto.product;
-import com.eCommercoal.eCommercialWeb.Repository.adminRepository;
-import com.eCommercoal.eCommercialWeb.Repository.productRepository;
+import com.eCommercoal.eCommercialWeb.Entity.admin;
+import com.eCommercoal.eCommercialWeb.Entity.product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -11,16 +9,37 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class productCURDOperations {
     @Autowired
-    private productRepository productRepository;
+    private com.eCommercoal.eCommercialWeb.Repository.productRepository productRepository;
 
     @Autowired
-    private adminRepository adminRepository;
+    private com.eCommercoal.eCommercialWeb.Repository.adminRepository adminRepository;
+
+    @GetMapping("/products")
+    public ResponseEntity<?> getAllProducts() {
+        List<product> products = productRepository.findAll();
+
+        return ResponseEntity.ok(products);
+    }
+
+
+    @GetMapping("/admin/products")
+    public ResponseEntity<?> getAllProducts(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        admin admin = adminRepository.findByToken(token);
+        if (admin == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid admin token");
+        }
+
+        List<product> products = productRepository.findAll();
+
+        return ResponseEntity.ok(products);
+    }
 
 
     @GetMapping("/product/{id}")
@@ -89,4 +108,5 @@ public class productCURDOperations {
 
         return ResponseEntity.ok("Product deleted successfully");
     }
+
 }

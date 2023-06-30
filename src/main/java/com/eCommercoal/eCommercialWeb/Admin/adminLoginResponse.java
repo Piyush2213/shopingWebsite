@@ -12,7 +12,7 @@ public class adminLoginResponse {
     }
 
 
-    public adminLoginResponse (String token) {
+    public adminLoginResponse(String token) {
         this.token = token;
     }
 }

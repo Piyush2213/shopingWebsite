@@ -68,7 +68,7 @@ public class customerSignUp {
 
 
 
-    public customerSignUp( String firstName, String lastName, String email, String password, String phone, String address) {
+    public customerSignUp(String firstName, String lastName, String email, String password, String phone, String address) {
 
         this.firstName = firstName;
         this.lastName = lastName;

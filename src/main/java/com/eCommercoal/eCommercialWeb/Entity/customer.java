@@ -1,4 +1,4 @@
-package com.eCommercoal.eCommercialWeb.Dto;
+package com.eCommercoal.eCommercialWeb.Entity;
 
 import jakarta.persistence.*;
 
@@ -11,7 +11,7 @@ public class customer {
     private int id;
 
     @Column(name = "firstname")
-    private String firstName;
+    private String name;
 
     @Column(name = "lastname")
     private String lastName;
@@ -43,11 +43,11 @@ public class customer {
     }
 
     public String getFirstName() {
-        return firstName;
+        return name;
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.name = firstName;
     }
 
     public String getLastName() {
@@ -102,7 +102,7 @@ public class customer {
 
     public customer(int id, String firstName, String lastName, String email, String password, String phone, String address) {
         this.id = id;
-        this.firstName = firstName;
+        this.name = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
@@ -110,9 +110,13 @@ public class customer {
         this.address = address;
 
     }
-    public customer( String firstName, String lastName, String email, String password, String phone, String address) {
+    public customer(String firstName, String email) {
+        this.name = firstName;
+        this.email = email;
+    }
+    public customer(String firstName, String lastName, String email, String password, String phone, String address) {
 
-        this.firstName = firstName;
+        this.name = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;

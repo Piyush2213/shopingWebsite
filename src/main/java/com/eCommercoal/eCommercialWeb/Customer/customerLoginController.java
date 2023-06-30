@@ -1,6 +1,5 @@
 package com.eCommercoal.eCommercialWeb.Customer;
-import com.eCommercoal.eCommercialWeb.Repository.customerRepository;
-import com.eCommercoal.eCommercialWeb.Dto.customer;
+import com.eCommercoal.eCommercialWeb.Entity.customer;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class customerLoginController {
     @Autowired
-    private customerRepository customerRepository;
+    private com.eCommercoal.eCommercialWeb.Repository.customerRepository customerRepository;
     @PostMapping("/customer/login")
     public ResponseEntity<?> login(@RequestBody customerLogin request) {
         if (request.getToken() != null) {
