@@ -30,14 +30,24 @@ public class CartItemController {
         int productId = (int) request.get("productId");
         int quantity = (int) request.get("quantity");
 
-        CartItem cartItem = new CartItem();
-        cartItem.setUserId(id);
-        cartItem.setProductId(productId);
-        cartItem.setQuantity(quantity);
-        cartService.calculateAmount(cartItem);
-        CartItem createdCartItem = cartRepository.save(cartItem);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCartItem);
+        Optional<CartItem> existingCartItem = cartRepository.findByProductIdAndUserId(productId, id);
+        if (existingCartItem.isPresent()) {
+            CartItem cartItem = existingCartItem.get();
+            cartItem.setQuantity(quantity);
+            cartService.calculateAmount(cartItem);
+            CartItem updatedCartItem = cartRepository.save(cartItem);
+            return ResponseEntity.ok(updatedCartItem);
+        } else {
+            CartItem cartItem = new CartItem();
+            cartItem.setUserId(id);
+            cartItem.setProductId(productId);
+            cartItem.setQuantity(quantity);
+            cartService.calculateAmount(cartItem);
+            CartItem createdCartItem = cartRepository.save(cartItem);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdCartItem);
+        }
     }
+
     @GetMapping
     public ResponseEntity<List<CartItem>> getAllCartItems(@PathVariable Integer id) {
         List<CartItem> cartItems = cartRepository.findAllByUserId(id);
