@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/customer")
 public class OrderController {
     private final OrderRepository orderRepository;
     private final OrderService orderService;
@@ -27,7 +27,7 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @PostMapping("/customer/{userId}")
+    @PostMapping("/{userId}/orders")
     public ResponseEntity<Order> createOrder(@PathVariable int userId, @RequestBody OrderRequest orderRequest) {
         Customer customer = new Customer();
         customer.setId(userId);
@@ -54,5 +54,22 @@ public class OrderController {
         cartItem.setProductId(cartItemRequest.getProductId());
         cartItem.setQuantity(cartItemRequest.getQuantity());
         return cartItem;
+    }
+
+
+    @GetMapping("/{userId}/orders")
+    public ResponseEntity<List<Order>> getUserOrders(@PathVariable int userId) {
+        List<Order> userOrders = orderRepository.findByCustomerId(userId);
+        return ResponseEntity.ok(userOrders);
+    }
+
+    @GetMapping("/{userId}/orders/{orderId}")
+    public ResponseEntity<Order> getOrderDetails(@PathVariable int userId, @PathVariable int orderId) {
+        Order order = orderRepository.findByIdAndCustomerId(orderId, userId);
+        if (order != null) {
+            return ResponseEntity.ok(order);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
