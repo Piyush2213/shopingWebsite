@@ -2,11 +2,12 @@ package com.eCommercoal.eCommercialWeb.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
 @Table (name = "eorder")
-public class Eorder {
+public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -22,14 +23,8 @@ public class Eorder {
     @JoinColumn(name = "eorder_id")
     private List<CartItem> cartItems;
 
-
-    public Eorder(){};
-
-    public Eorder(String orderDescription, Customer customer, List<CartItem> cartItems) {
-        this.orderDescription = orderDescription;
-        this.customer = customer;
-        this.cartItems = cartItems;
-    }
+    @Column(name = "total_amount")
+    private BigDecimal totalAmount;
 
     public int getId() {
         return id;
@@ -62,4 +57,21 @@ public class Eorder {
     public void setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
     }
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public Order(int id, String orderDescription, Customer customer, List<CartItem> cartItems, BigDecimal totalAmount) {
+        this.id = id;
+        this.orderDescription = orderDescription;
+        this.customer = customer;
+        this.cartItems = cartItems;
+        this.totalAmount = totalAmount;
+    }
+    public Order(){};
 }
