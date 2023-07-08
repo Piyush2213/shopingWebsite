@@ -1,19 +1,22 @@
 package com.eCommercoal.eCommercialWeb.cart;
 
 import com.eCommercoal.eCommercialWeb.entity.CartItem;
+import com.eCommercoal.eCommercialWeb.orderRequest.CartItemRequest;
 import com.eCommercoal.eCommercialWeb.repository.CartRepository;
 import com.eCommercoal.eCommercialWeb.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
-import java.util.*;
+import java.util.List;
 
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/customer/{id}/carts/cartItems")
+@RequestMapping("/customer/{id}/carts")
 
 public class CartItemController {
     private final CartRepository cartRepository;
@@ -25,10 +28,10 @@ public class CartItemController {
         this.cartService = cartService;
     }
 
-    @PostMapping
-    public ResponseEntity<CartItem> createCartItem(@PathVariable Integer id, @RequestBody Map<String, Object> request) {
-        int productId = (int) request.get("productId");
-        int quantity = (int) request.get("quantity");
+    @PostMapping("/cartItems")
+    public ResponseEntity<CartItem> createCartItem(@PathVariable Integer id, @RequestBody CartItemRequest request) {
+        int productId = request.getProductId();
+        int quantity = request.getQuantity();
 
         Optional<CartItem> existingCartItem = cartRepository.findByProductIdAndUserId(productId, id);
         if (existingCartItem.isPresent()) {
@@ -48,13 +51,13 @@ public class CartItemController {
         }
     }
 
-    @GetMapping
+    @GetMapping("/cartItems")
     public ResponseEntity<List<CartItem>> getAllCartItems(@PathVariable Integer id) {
         List<CartItem> cartItems = cartRepository.findAllByUserId(id);
         return ResponseEntity.ok(cartItems);
     }
 
-    @GetMapping("/{itemId}")
+    @GetMapping("/cartItems/{itemId}")
     public ResponseEntity<CartItem> getCartItem(@PathVariable Integer id, @PathVariable("itemId") Integer itemId) {
         Optional<CartItem> cartItem = cartRepository.findByIdAndUserId(itemId, id);
         if (cartItem.isPresent()) {
@@ -64,7 +67,7 @@ public class CartItemController {
         }
     }
 
-    @PutMapping("/{itemId}")
+    @PutMapping("/cartItems/{itemId}")
     public ResponseEntity<CartItem> updateCartItem(@PathVariable Integer id, @PathVariable("itemId") Integer itemId, @RequestBody CartItem updatedCartItem) {
         Optional<CartItem> existingCartItem = cartRepository.findByIdAndUserId(itemId, id);
         if (existingCartItem.isPresent()) {
@@ -79,7 +82,7 @@ public class CartItemController {
         }
     }
 
-    @DeleteMapping("/{itemId}")
+    @DeleteMapping("/cartItems/{itemId}")
     public ResponseEntity<Void> deleteCartItem(@PathVariable Integer id, @PathVariable("itemId") Integer itemId) {
         Optional<CartItem> existingCartItem = cartRepository.findByIdAndUserId(itemId, id);
         if (existingCartItem.isPresent()) {
@@ -89,6 +92,4 @@ public class CartItemController {
             return ResponseEntity.notFound().build();
         }
     }
-
-
 }

@@ -13,9 +13,10 @@ public class Order {
     @Column(name = "id")
     private int id;
 
+    @Column(name = "order_description")
     private String orderDescription;
 
-    @OneToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "customer_id", referencedColumnName = "id")
     private Customer customer;
 

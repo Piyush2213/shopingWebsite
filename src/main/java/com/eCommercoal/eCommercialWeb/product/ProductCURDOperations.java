@@ -47,7 +47,7 @@ public class ProductCURDOperations {
 
         Product savedProduct = productRepository.save(new_product);
 
-        return ResponseEntity.ok(savedProduct);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedProduct);
 
 
     }

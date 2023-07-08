@@ -67,9 +67,13 @@ public class OrderController {
     public ResponseEntity<Order> getOrderDetails(@PathVariable int userId, @PathVariable int orderId) {
         Order order = orderRepository.findByIdAndCustomerId(orderId, userId);
         if (order != null) {
-            return ResponseEntity.ok(order);
+            if (order.getCustomer().getId() == userId) {
+                return ResponseEntity.ok(order);
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 }
