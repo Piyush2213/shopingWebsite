@@ -1,4 +1,4 @@
-package com.eCommercoal.eCommercialWeb.customer;
+package com.eCommercoal.eCommercialWeb.response;
 
 public class CustomerLoginResponse {
 

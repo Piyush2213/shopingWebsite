@@ -1,4 +1,6 @@
-package com.eCommercoal.eCommercialWeb.customer;
+package com.eCommercoal.eCommercialWeb.controller;
+import com.eCommercoal.eCommercialWeb.request.CustomerLoginRequest;
+import com.eCommercoal.eCommercialWeb.response.CustomerLoginResponse;
 import com.eCommercoal.eCommercialWeb.entity.Customer;
 import com.eCommercoal.eCommercialWeb.repository.CustomerRepository;
 import io.jsonwebtoken.Jwts;
@@ -18,14 +20,7 @@ public class CustomerLoginController {
     @Autowired
     private CustomerRepository customerRepository;
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody CustomerLogin request) {
-        if (request.getToken() != null) {
-            Customer customer = customerRepository.findByToken(request.getToken());
-            if (customer != null) {
-                return ResponseEntity.ok(customer);
-            }
-        }
-
+    public ResponseEntity<?> login(@RequestBody CustomerLoginRequest request) {
         Customer customer = customerRepository.findByEmail(request.getEmail());
         if (customer == null || !customer.getPassword().equals(request.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");

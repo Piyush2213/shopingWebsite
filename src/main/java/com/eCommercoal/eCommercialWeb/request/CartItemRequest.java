@@ -1,4 +1,4 @@
-package com.eCommercoal.eCommercialWeb.orderRequest;
+package com.eCommercoal.eCommercialWeb.request;
 
 public class CartItemRequest {
     private int id;

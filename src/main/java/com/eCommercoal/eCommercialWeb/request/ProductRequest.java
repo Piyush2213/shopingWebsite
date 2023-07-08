@@ -1,7 +1,7 @@
-package com.eCommercoal.eCommercialWeb.product;
+package com.eCommercoal.eCommercialWeb.request;
 
 
-public class ProductDetails {
+public class ProductRequest {
 
     private String name;
 
@@ -45,10 +45,11 @@ public class ProductDetails {
         this.quantity = quantity;
     }
 
-    public ProductDetails(String name, String description, float price, int quantity) {
+    public ProductRequest(String name, String description, float price, int quantity) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
     }
+    public ProductRequest(){};
 }

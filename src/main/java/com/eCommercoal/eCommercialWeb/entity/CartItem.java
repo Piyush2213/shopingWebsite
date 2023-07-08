@@ -9,34 +9,24 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
+
     @Column(name = "user_id")
     private int userId;
 
+    @Column(name = "product_id")
     private int productId;
-    private String productName;
+
+    @Column(name = "quantity")
     private int quantity;
+    @Transient
     private float amount;
 
-    public int getUserId() {
-        return userId;
+
+    public float getAmount() {
+        return amount;
     }
 
-    public CartItem(int userId) {
-        this.userId = userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public CartItem(int productId, int quantity) {
-        this.productId = productId;
-        this.quantity = quantity;
-    }
-
-    public CartItem(int id, String productName, float amount) {
-        this.id = id;
-        this.productName = productName;
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
@@ -48,20 +38,20 @@ public class CartItem {
         this.id = id;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     public int getProductId() {
         return productId;
     }
 
     public void setProductId(int productId) {
         this.productId = productId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
     }
 
     public int getQuantity() {
@@ -72,11 +62,11 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public float getAmount() {
-        return amount;
-    }
-
-    public void setAmount(float amount) {
+    public CartItem(int id, int userId, int productId, int quantity, float amount) {
+        this.id = id;
+        this.userId = userId;
+        this.productId = productId;
+        this.quantity = quantity;
         this.amount = amount;
     }
 

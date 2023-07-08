@@ -1,6 +1,6 @@
-package com.eCommercoal.eCommercialWeb.customer;
+package com.eCommercoal.eCommercialWeb.request;
 
-public class CustomerSignUp {
+public class CustomerSignUpRequest {
     private String firstName;
 
     private String lastName;
@@ -68,7 +68,7 @@ public class CustomerSignUp {
 
 
 
-    public CustomerSignUp(String firstName, String lastName, String email, String password, String phone, String address) {
+    public CustomerSignUpRequest(String firstName, String lastName, String email, String password, String phone, String address) {
 
         this.firstName = firstName;
         this.lastName = lastName;
@@ -77,5 +77,5 @@ public class CustomerSignUp {
         this.phone = phone;
         this.address = address;
     }
-    public CustomerSignUp(){};
+    public CustomerSignUpRequest(){};
 }

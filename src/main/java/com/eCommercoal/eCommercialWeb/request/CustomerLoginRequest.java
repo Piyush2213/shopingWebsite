@@ -1,6 +1,6 @@
-package com.eCommercoal.eCommercialWeb.customer;
+package com.eCommercoal.eCommercialWeb.request;
 
-public class CustomerLogin {
+public class CustomerLoginRequest {
     private String email;
     private String password;
 

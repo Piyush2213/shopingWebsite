@@ -20,7 +20,6 @@ public class CartService {
         int productId = cartItem.getProductId();
         int quantity = cartItem.getQuantity();
 
-        // Fetch the product from the database using the product ID
         Product product = productRepository.findById(productId).orElse(null);
 
         if (product != null) {
