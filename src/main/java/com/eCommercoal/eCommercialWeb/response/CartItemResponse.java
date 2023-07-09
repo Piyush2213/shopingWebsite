@@ -1,10 +1,14 @@
 package com.eCommercoal.eCommercialWeb.response;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+
 public class CartItemResponse {
     private int id;
     private String productName;
     private int quantity;
-    private float amount;
+    private BigDecimal amount;
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
 
     public int getId() {
         return id;
@@ -12,6 +16,9 @@ public class CartItemResponse {
 
     public void setId(int id) {
         this.id = id;
+    }
+    public String getFormattedAmount() {
+        return DECIMAL_FORMAT.format(amount);
     }
 
     public String getProductName() {
@@ -30,15 +37,15 @@ public class CartItemResponse {
         this.quantity = quantity;
     }
 
-    public float getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
-    public CartItemResponse(int id, String productName, int quantity, float amount) {
+    public CartItemResponse(int id, String productName, int quantity, BigDecimal amount) {
         this.id = id;
         this.productName = productName;
         this.quantity = quantity;

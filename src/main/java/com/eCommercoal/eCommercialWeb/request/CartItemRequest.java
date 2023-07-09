@@ -1,10 +1,12 @@
 package com.eCommercoal.eCommercialWeb.request;
 
+import java.math.BigDecimal;
+
 public class CartItemRequest {
     private int id;
     private int productId;
     private int quantity;
-    private float amount;
+    private BigDecimal amount;
 
     public int getId() {
         return id;
@@ -30,15 +32,15 @@ public class CartItemRequest {
         this.quantity = quantity;
     }
 
-    public float getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
-    public CartItemRequest(int id, int productId, int quantity, float amount) {
+    public CartItemRequest(int id, int productId, int quantity, BigDecimal amount) {
         this.id = id;
         this.productId = productId;
         this.quantity = quantity;

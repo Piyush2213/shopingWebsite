@@ -2,6 +2,8 @@ package com.eCommercoal.eCommercialWeb.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "cart")
 public class CartItem {
@@ -18,15 +20,28 @@ public class CartItem {
 
     @Column(name = "quantity")
     private int quantity;
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
     @Transient
-    private float amount;
+    private BigDecimal amount;
+
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 
 
-    public float getAmount() {
+
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(float amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 
@@ -62,12 +77,16 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public CartItem(int id, int userId, int productId, int quantity, float amount) {
+    public CartItem(int id, int userId, int productId, int quantity, BigDecimal amount) {
         this.id = id;
         this.userId = userId;
         this.productId = productId;
         this.quantity = quantity;
         this.amount = amount;
+    }
+
+    public CartItem(Order order) {
+        this.order = order;
     }
 
     public CartItem(){};

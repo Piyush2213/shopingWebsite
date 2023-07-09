@@ -7,6 +7,7 @@ import com.eCommercoal.eCommercialWeb.request.CartItemRequest;
 import com.eCommercoal.eCommercialWeb.repository.CartRepository;
 import com.eCommercoal.eCommercialWeb.response.CartItemResponse;
 import com.eCommercoal.eCommercialWeb.service.CartService;
+import com.eCommercoal.eCommercialWeb.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +26,14 @@ public class CartItemController {
     private final CartRepository cartRepository;
     private final CartService cartService;
     private final ProductRepository productRepository;
+    private final ProductService productService;
 
     @Autowired
-    public CartItemController(CartRepository cartRepository, CartService cartService, ProductRepository productRepository) {
+    public CartItemController(CartRepository cartRepository, CartService cartService, ProductRepository productRepository, ProductService productService) {
         this.cartRepository = cartRepository;
         this.cartService = cartService;
         this.productRepository = productRepository;
+        this.productService = productService;
     }
 
     @PostMapping("/cartItems")
@@ -47,8 +50,9 @@ public class CartItemController {
 
             Product product = productRepository.findById(productId).orElse(null);
             if (product == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Product not found
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
+            productService.updateProductQuantity(productId, quantity);
 
             CartItemResponse response = new CartItemResponse();
             response.setId(updatedCartItem.getId());
@@ -69,6 +73,7 @@ public class CartItemController {
             if (product == null) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
             }
+            productService.updateProductQuantity(productId, quantity);
 
             CartItemResponse response = new CartItemResponse();
             response.setId(createdCartItem.getId());

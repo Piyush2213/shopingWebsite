@@ -2,6 +2,8 @@ package com.eCommercoal.eCommercialWeb.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 
 @Entity
 @Table(name = "product")
@@ -17,7 +19,7 @@ public class Product {
     @Column(name = "description")
     private String description;
     @Column(name = "price")
-    private float price;
+    private BigDecimal price;
 
     @Column(name = "quantity")
     private int quantity;
@@ -46,11 +48,11 @@ public class Product {
         this.description = description;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -62,7 +64,7 @@ public class Product {
         this.quantity = quantity;
     }
 
-    public Product(int id, String name, String description, float price, int quantity) {
+    public Product(int id, String name, String description, BigDecimal price, int quantity) {
         this.id = id;
         this.name = name;
         this.description = description;

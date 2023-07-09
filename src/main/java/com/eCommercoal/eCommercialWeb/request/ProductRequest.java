@@ -1,6 +1,8 @@
 package com.eCommercoal.eCommercialWeb.request;
 
 
+import java.math.BigDecimal;
+
 public class ProductRequest {
 
     private String name;
@@ -8,7 +10,7 @@ public class ProductRequest {
 
     private String description;
 
-    private float price;
+    private BigDecimal price;
 
 
     private int quantity;
@@ -29,11 +31,11 @@ public class ProductRequest {
         this.description = description;
     }
 
-    public float getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -45,7 +47,7 @@ public class ProductRequest {
         this.quantity = quantity;
     }
 
-    public ProductRequest(String name, String description, float price, int quantity) {
+    public ProductRequest(String name, String description, BigDecimal price, int quantity) {
         this.name = name;
         this.description = description;
         this.price = price;

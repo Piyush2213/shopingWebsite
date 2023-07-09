@@ -42,7 +42,7 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(@PathVariable Integer id){
-        Optional<Product>  optionalProduct = productRepository.findProductById(id);
+        Optional<Product>  optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
         }
