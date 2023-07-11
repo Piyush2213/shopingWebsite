@@ -20,6 +20,7 @@ public class CartItem {
 
     @Column(name = "quantity")
     private int quantity;
+    @Transient
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;

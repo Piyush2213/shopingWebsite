@@ -3,6 +3,7 @@ package com.eCommercoal.eCommercialWeb.controller;
 import com.eCommercoal.eCommercialWeb.entity.CartItem;
 import com.eCommercoal.eCommercialWeb.entity.Customer;
 import com.eCommercoal.eCommercialWeb.entity.Order;
+import com.eCommercoal.eCommercialWeb.entity.OrderItem;
 import com.eCommercoal.eCommercialWeb.repository.CartRepository;
 import com.eCommercoal.eCommercialWeb.repository.CustomerRepository;
 import com.eCommercoal.eCommercialWeb.repository.OrderRepository;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,20 +58,29 @@ public class OrderController {
         Order order = new Order();
         order.setOrderDescription(orderRequest.getOrderDescription());
         order.setCustomer(customer);
-        order.setCartItems(cartItems);
+        order.setTotalAmount(BigDecimal.ZERO);
 
+        List<OrderItem> orderItems = new ArrayList<>();
+        BigDecimal totalAmount = BigDecimal.ZERO;
         for (CartItem cartItem : cartItems) {
             cartService.calculateAmount(cartItem);
             cartItem.setOrder(order);
+
+            OrderItem orderItem = new OrderItem();
+            orderItem.setOrder(order);
+            orderItem.setProductId(cartItem.getProductId());
+            orderItem.setQuantity(cartItem.getQuantity());
+            orderItems.add(orderItem);
+
+            totalAmount = totalAmount.add(cartItem.getAmount());
         }
 
-        BigDecimal totalAmount = orderService.calculateTotalAmount(cartItems);
+        order.setOrderItems(orderItems);
         order.setTotalAmount(totalAmount);
 
         Order createdOrder = orderRepository.save(order);
 
         cartRepository.deleteAll(cartItems);
-
 
         OrderResponse response = new OrderResponse();
         response.setId(createdOrder.getId());
@@ -79,7 +90,4 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
-
-
-
 }

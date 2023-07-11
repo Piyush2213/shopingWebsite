@@ -21,7 +21,7 @@ public class Order {
     private Customer customer;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<CartItem> cartItems;
+    private List<OrderItem> orderItems;
 
     @Column(name = "total_amount", precision = 10, scale = 2)
     private BigDecimal totalAmount;
@@ -51,12 +51,12 @@ public class Order {
         this.customer = customer;
     }
 
-    public List<CartItem> getOrderItems() {
-        return cartItems;
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
     }
 
-    public void setOrderItems(List<CartItem> orderItems) {
-        this.cartItems = orderItems;
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 
     public BigDecimal getTotalAmount() {
@@ -67,15 +67,15 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    public Order(Integer id, String orderDescription, Customer customer, List<CartItem> cartItems, BigDecimal totalAmount) {
+    public Order(Integer id, String orderDescription, Customer customer, List<OrderItem> orderItems, BigDecimal totalAmount) {
         this.id = id;
         this.orderDescription = orderDescription;
         this.customer = customer;
-        this.cartItems = cartItems;
+        this.orderItems = orderItems;
         this.totalAmount = totalAmount;
     }
     public Order(){};
-    public void setCartItems(List<CartItem> cartItems) {
-        this.cartItems = cartItems;
+    public void setCartItems(List<OrderItem> cartItems) {
+        this.orderItems = cartItems;
     }
 }
