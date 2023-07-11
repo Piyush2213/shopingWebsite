@@ -3,6 +3,7 @@ package com.eCommercoal.eCommercialWeb.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -26,6 +27,16 @@ public class Order {
     @Column(name = "total_amount", precision = 10, scale = 2)
     private BigDecimal totalAmount;
 
+    @Column(name = "date_time")
+    private LocalDateTime dateTime;
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
 
     public Integer getId() {
         return id;
@@ -67,12 +78,14 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    public Order(Integer id, String orderDescription, Customer customer, List<OrderItem> orderItems, BigDecimal totalAmount) {
+    public Order(LocalDateTime dateTime, Integer id, String orderDescription, Customer customer, List<OrderItem> orderItems, BigDecimal totalAmount) {
+        this.dateTime = dateTime;
         this.id = id;
         this.orderDescription = orderDescription;
         this.customer = customer;
         this.orderItems = orderItems;
         this.totalAmount = totalAmount;
+
     }
     public Order(){};
     public void setCartItems(List<OrderItem> cartItems) {

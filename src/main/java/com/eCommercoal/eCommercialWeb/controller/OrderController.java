@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +79,8 @@ public class OrderController {
 
         order.setOrderItems(orderItems);
         order.setTotalAmount(totalAmount);
+        Clock cl = Clock.systemUTC();
+        order.setDateTime(LocalDateTime.now(cl));
 
         Order createdOrder = orderRepository.save(order);
 
