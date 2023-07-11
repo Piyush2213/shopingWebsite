@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,6 +93,8 @@ public class CartItemController {
         List<CartItem> cartItems = cartRepository.findAllByUserId(id);
         List<CartItemResponse> cartItemResponses = new ArrayList<>();
 
+        BigDecimal totalAmount = BigDecimal.ZERO;
+
         for (CartItem cartItem : cartItems) {
             Product product = productRepository.findById(cartItem.getProductId()).orElse(null);
             if (product != null) {
@@ -102,7 +105,13 @@ public class CartItemController {
                 response.setQuantity(cartItem.getQuantity());
                 response.setAmount(cartItem.getAmount());
                 cartItemResponses.add(response);
+
+                totalAmount = totalAmount.add(cartItem.getAmount());
             }
+        }
+
+        for (CartItemResponse response : cartItemResponses) {
+            response.setTotalAmount(totalAmount);
         }
 
         return ResponseEntity.ok(cartItemResponses);
@@ -128,7 +137,7 @@ public class CartItemController {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
             }
         } else {
-            return ResponseEntity.notFound().build(); // Cart item not found
+            return ResponseEntity.notFound().build();
         }
     }
 

@@ -30,6 +30,7 @@ public class ProductController {
 
         for (Product product : products) {
             ProductResponse response = new ProductResponse();
+            response.setId(product.getId());
             response.setName(product.getName());
             response.setDescription(product.getDescription());
             response.setPrice(product.getPrice());

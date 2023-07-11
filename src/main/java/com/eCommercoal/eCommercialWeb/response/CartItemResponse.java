@@ -8,7 +8,15 @@ public class CartItemResponse {
     private String productName;
     private int quantity;
     private BigDecimal amount;
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
+    private BigDecimal totalAmount;
+
+    public BigDecimal getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(BigDecimal totalAmount) {
+        this.totalAmount = totalAmount;
+    }
 
     public int getId() {
         return id;
@@ -17,9 +25,7 @@ public class CartItemResponse {
     public void setId(int id) {
         this.id = id;
     }
-    public String getFormattedAmount() {
-        return DECIMAL_FORMAT.format(amount);
-    }
+
 
     public String getProductName() {
         return productName;
@@ -45,11 +51,12 @@ public class CartItemResponse {
         this.amount = amount;
     }
 
-    public CartItemResponse(int id, String productName, int quantity, BigDecimal amount) {
+    public CartItemResponse(int id, String productName, int quantity, BigDecimal amount, BigDecimal totalAmount) {
         this.id = id;
         this.productName = productName;
         this.quantity = quantity;
         this.amount = amount;
+        this.totalAmount = totalAmount;
     }
     public CartItemResponse(){};
 }

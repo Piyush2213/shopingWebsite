@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,6 +68,8 @@ public class OrderController {
 
         Order createdOrder = orderRepository.save(order);
 
+        cartRepository.deleteAll(cartItems);
+
 
         OrderResponse response = new OrderResponse();
         response.setId(createdOrder.getId());
@@ -78,5 +79,7 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+
 
 }
