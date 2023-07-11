@@ -7,7 +7,18 @@ public class OrderResponse {
     private String orderDescription;
     private BigDecimal totalAmount;
     private int customerId;
+    private String errorMessage;
+    public OrderResponse(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
     public int getId() {
         return id;

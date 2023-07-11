@@ -2,6 +2,7 @@ package com.eCommercoal.eCommercialWeb.controller;
 
 import com.eCommercoal.eCommercialWeb.entity.CartItem;
 import com.eCommercoal.eCommercialWeb.entity.Product;
+import com.eCommercoal.eCommercialWeb.exception.CustomError;
 import com.eCommercoal.eCommercialWeb.repository.ProductRepository;
 import com.eCommercoal.eCommercialWeb.request.CartItemRequest;
 import com.eCommercoal.eCommercialWeb.repository.CartRepository;
@@ -42,6 +43,12 @@ public class CartItemController {
         int productId = request.getProductId();
         int quantity = request.getQuantity();
 
+        Product existingProduct = productRepository.findById(productId).orElse(null);
+        if (existingProduct == null) {
+            CustomError error = new CustomError("Product with ID " + productId + " not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+
         Optional<CartItem> existingCartItem = cartRepository.findByProductIdAndUserId(productId, id);
         if (existingCartItem.isPresent()) {
             CartItem cartItem = existingCartItem.get();
@@ -49,15 +56,9 @@ public class CartItemController {
             cartService.calculateAmount(cartItem);
             CartItem updatedCartItem = cartRepository.save(cartItem);
 
-            Product product = productRepository.findById(productId).orElse(null);
-            if (product == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            productService.updateProductQuantity(productId, quantity);
-
             CartItemResponse response = new CartItemResponse();
             response.setId(updatedCartItem.getId());
-            response.setProductName(product.getName());
+            response.setProductName(existingProduct.getName());
             response.setQuantity(updatedCartItem.getQuantity());
             response.setAmount(updatedCartItem.getAmount());
 
@@ -70,22 +71,15 @@ public class CartItemController {
             cartService.calculateAmount(cartItem);
             CartItem createdCartItem = cartRepository.save(cartItem);
 
-            Product product = productRepository.findById(productId).orElse(null);
-            if (product == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-            }
-            productService.updateProductQuantity(productId, quantity);
-
             CartItemResponse response = new CartItemResponse();
             response.setId(createdCartItem.getId());
-            response.setProductName(product.getName());
+            response.setProductName(existingProduct.getName());
             response.setQuantity(createdCartItem.getQuantity());
             response.setAmount(createdCartItem.getAmount());
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }
     }
-
 
 
     @GetMapping("/cartItems")

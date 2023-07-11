@@ -3,7 +3,7 @@ package com.eCommercoal.eCommercialWeb.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "customer")
+@Table(name = "customers")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

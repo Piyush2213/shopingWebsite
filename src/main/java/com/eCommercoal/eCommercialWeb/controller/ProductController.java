@@ -2,6 +2,8 @@ package com.eCommercoal.eCommercialWeb.controller;
 
 
 import com.eCommercoal.eCommercialWeb.entity.Product;
+import com.eCommercoal.eCommercialWeb.exception.CustomError;
+import com.eCommercoal.eCommercialWeb.exception.ExistsException;
 import com.eCommercoal.eCommercialWeb.request.ProductRequest;
 import com.eCommercoal.eCommercialWeb.repository.ProductRepository;
 import com.eCommercoal.eCommercialWeb.response.ProductResponse;
@@ -25,6 +27,9 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
         List<Product> products = productRepository.findAll();
+        if (products.isEmpty()) {
+            throw new ExistsException("Nothing Added Yet.");
+        }
 
         List<ProductResponse> responseList = new ArrayList<>();
 
@@ -42,10 +47,10 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductById(@PathVariable Integer id){
-        Optional<Product>  optionalProduct = productRepository.findById(id);
+    public ResponseEntity<ProductResponse> getProductById(@PathVariable Integer id) {
+        Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+            throw new ExistsException("Product Not Found");
         }
 
         Product product = optionalProduct.get();
@@ -58,8 +63,12 @@ public class ProductController {
 
         return ResponseEntity.ok(response);
     }
+
+
+
+
     @PostMapping
-    public ResponseEntity<?> addProduct(@RequestBody ProductRequest productRequest) {
+    public ResponseEntity<ProductResponse> addProduct(@RequestBody ProductRequest productRequest) {
 
         Product newProduct = new Product();
         newProduct.setName(productRequest.getName());
@@ -81,11 +90,11 @@ public class ProductController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateProduct(@PathVariable Integer id, @RequestBody ProductRequest productRequest) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer id, @RequestBody ProductRequest productRequest) {
 
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+            throw new ExistsException("Product not Found.");
         }
 
         Product existingProduct = optionalProduct.get();
@@ -100,14 +109,15 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Integer id) {
+    public ResponseEntity<CustomError> deleteProduct(@PathVariable Integer id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+            throw new ExistsException("Product not Found.");
         }
         productRepository.deleteById(id);
+        CustomError response = new CustomError("Product deleted successfully");
 
-        return ResponseEntity.ok("Product deleted successfully");
+        return ResponseEntity.ok(response);
     }
 
 }

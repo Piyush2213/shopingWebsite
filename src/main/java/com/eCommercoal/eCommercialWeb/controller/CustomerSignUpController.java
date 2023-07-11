@@ -1,4 +1,5 @@
 package com.eCommercoal.eCommercialWeb.controller;
+import com.eCommercoal.eCommercialWeb.exception.ExistsException;
 import com.eCommercoal.eCommercialWeb.request.CustomerSignUpRequest;
 import com.eCommercoal.eCommercialWeb.entity.Customer;
 import com.eCommercoal.eCommercialWeb.repository.CustomerRepository;
@@ -11,17 +12,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("/customers")
 public class CustomerSignUpController {
     @Autowired
     private CustomerRepository customerRepository;
     @PostMapping("/signup")
-    public ResponseEntity<?> createNewEmployee(@RequestBody CustomerSignUpRequest customerSignUpRequest) {
+    public ResponseEntity<CustomerSignUpResponse> createNewEmployee(@RequestBody CustomerSignUpRequest customerSignUpRequest) {
         String email = customerSignUpRequest.getEmail();
         Customer existing = customerRepository.findByEmail(email);
 
         if (existing != null) {
-            throw new RuntimeException("Customer with email " + email + " already exists.");
+            throw new ExistsException("Customer with email " + email + " already exists.");
         }
 
         Customer newCustomer = new Customer();

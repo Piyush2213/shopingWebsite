@@ -2,7 +2,7 @@ package com.eCommercoal.eCommercialWeb.response;
 
 import java.math.BigDecimal;
 
-public class ProductResponse {
+public class ProductResponse  {
     private int id;
     private String name;
 

@@ -1,17 +1,17 @@
 package com.eCommercoal.eCommercialWeb.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@Controller
+@ControllerAdvice
 public class CustomerControllerAdvice {
-    @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(ExistsException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public CustomError HandleSecurityException(RuntimeException ex){
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public CustomError handleCustomerExistsException(ExistsException ex) {
         return new CustomError(ex.getMessage());
     }
 }
