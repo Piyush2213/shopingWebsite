@@ -1,8 +1,10 @@
 package com.eCommercoal.eCommercialWeb.controller;
 
 import com.eCommercoal.eCommercialWeb.entity.CartItem;
+import com.eCommercoal.eCommercialWeb.entity.Customer;
 import com.eCommercoal.eCommercialWeb.entity.Product;
 import com.eCommercoal.eCommercialWeb.exception.CustomError;
+import com.eCommercoal.eCommercialWeb.repository.CustomerRepository;
 import com.eCommercoal.eCommercialWeb.repository.ProductRepository;
 import com.eCommercoal.eCommercialWeb.request.CartItemRequest;
 import com.eCommercoal.eCommercialWeb.repository.CartRepository;
@@ -23,12 +25,16 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/customer/{id}/carts")
+@CrossOrigin(origins = {"*"}, allowedHeaders = {"*"}, exposedHeaders = { "*" }, methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
+
 
 public class CartItemController {
     private final CartRepository cartRepository;
     private final CartService cartService;
     private final ProductRepository productRepository;
     private final ProductService productService;
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Autowired
     public CartItemController(CartRepository cartRepository, CartService cartService, ProductRepository productRepository, ProductService productService) {
@@ -40,6 +46,11 @@ public class CartItemController {
 
     @PostMapping("/cartItems")
     public ResponseEntity<CartItemResponse> createCartItem(@PathVariable Integer id, @RequestBody CartItemRequest request) {
+        Optional<Customer> existingCustomer = customerRepository.findById(id);
+        if (!existingCustomer.isPresent()) {
+            CustomError error = new CustomError("Customer with ID " + id + " not found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
         int productId = request.getProductId();
         int quantity = request.getQuantity();
 

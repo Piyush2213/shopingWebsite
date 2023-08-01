@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 public class ProductRequest {
 
     private String name;
+    private String imageURL;
 
 
     private String description;
@@ -14,6 +15,14 @@ public class ProductRequest {
 
 
     private int quantity;
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
     public String getName() {
         return name;
@@ -47,11 +56,12 @@ public class ProductRequest {
         this.quantity = quantity;
     }
 
-    public ProductRequest(String name, String description, BigDecimal price, int quantity) {
+    public ProductRequest(String name, String description, BigDecimal price, int quantity, String imageURL) {
         this.name = name;
         this.description = description;
         this.price = price;
         this.quantity = quantity;
+        this.imageURL = imageURL;
     }
     public ProductRequest(){};
 }

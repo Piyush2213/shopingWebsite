@@ -54,9 +54,6 @@ public class OrderController {
         if (cartItems.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
-
-
-
         Order order = new Order();
         order.setOrderDescription(orderRequest.getOrderDescription());
         order.setCustomer(customer);

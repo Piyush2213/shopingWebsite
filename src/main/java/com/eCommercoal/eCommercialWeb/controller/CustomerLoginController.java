@@ -7,15 +7,15 @@ import com.eCommercoal.eCommercialWeb.repository.CustomerRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/customers")
+@CrossOrigin(origins = {"*"}, allowedHeaders = {"*"}, exposedHeaders = { "*" }, methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
+
 public class CustomerLoginController {
     @Autowired
     private CustomerRepository customerRepository;
@@ -31,6 +31,7 @@ public class CustomerLoginController {
 
         return ResponseEntity.ok(new CustomerLoginResponse(token));
     }
+
     private String generateToken(Customer customer) {
         byte[] keyBytes = Keys.secretKeyFor(SignatureAlgorithm.HS512).getEncoded();
 
