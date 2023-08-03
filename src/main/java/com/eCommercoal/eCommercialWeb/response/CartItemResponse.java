@@ -1,11 +1,15 @@
 package com.eCommercoal.eCommercialWeb.response;
 
+import com.eCommercoal.eCommercialWeb.entity.Product;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 public class CartItemResponse {
     private int id;
     private String productName;
+    private String imageURL;
+
     private int quantity;
     private BigDecimal amount;
     private BigDecimal totalAmount;
@@ -16,6 +20,14 @@ public class CartItemResponse {
 
     public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     public int getId() {
@@ -51,11 +63,12 @@ public class CartItemResponse {
         this.amount = amount;
     }
 
-    public CartItemResponse(int id, String productName, int quantity, BigDecimal amount, BigDecimal totalAmount) {
+    public CartItemResponse(int id, String productName, int quantity, BigDecimal amount, String imageURL, BigDecimal totalAmount) {
         this.id = id;
         this.productName = productName;
         this.quantity = quantity;
         this.amount = amount;
+        this.imageURL = imageURL;
         this.totalAmount = totalAmount;
     }
     public CartItemResponse(){};
