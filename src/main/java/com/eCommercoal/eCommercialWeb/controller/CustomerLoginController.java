@@ -7,6 +7,7 @@ import com.eCommercoal.eCommercialWeb.repository.CustomerRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,24 @@ public class CustomerLoginController {
         String token = generateToken(customer);
 
         return ResponseEntity.ok(new CustomerLoginResponse(token));
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest req) {
+        String token = req.getHeader("Authorization");
+        Customer customer = getUserFromToken(token);
+        if (customer != null) {
+            customerRepository.updateToken(customer.getId(), null);
+            return ResponseEntity.ok().build();
+        } else {
+            throw new RuntimeException("Invalid token");
+        }
+    }
+    private Customer getUserFromToken(String token) {
+        Customer customer = customerRepository.findByToken(token);
+        if (customer != null) {
+            return customer;
+        }
+        throw new ExistsException("Invalid token or user not found.");
     }
 
     private String generateToken(Customer customer) {

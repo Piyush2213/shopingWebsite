@@ -9,6 +9,7 @@ import com.eCommercoal.eCommercialWeb.repository.CustomerRepository;
 import com.eCommercoal.eCommercialWeb.repository.ProductRepository;
 import com.eCommercoal.eCommercialWeb.request.CartItemRequest;
 import com.eCommercoal.eCommercialWeb.repository.CartRepository;
+import com.eCommercoal.eCommercialWeb.response.CartItemCreateResponse;
 import com.eCommercoal.eCommercialWeb.response.CartItemListResponse;
 import com.eCommercoal.eCommercialWeb.response.CartItemResponse;
 import com.eCommercoal.eCommercialWeb.service.CartService;
@@ -55,7 +56,7 @@ public class CartItemController {
     }
 
     @PostMapping("/cartItems")
-    public ResponseEntity<CartItemResponse> createCartItem(HttpServletRequest req, @RequestBody CartItemRequest request) {
+    public ResponseEntity<CartItemCreateResponse> createCartItem(HttpServletRequest req, @RequestBody CartItemRequest request) {
         String token = req.getHeader("Authorization");
         Customer customer = getUserFromToken(token);
 
@@ -84,7 +85,7 @@ public class CartItemController {
             cartService.calculateAmount(cartItem);
             CartItem updatedCartItem = cartRepository.save(cartItem);
 
-            CartItemResponse response = new CartItemResponse();
+            CartItemCreateResponse response = new CartItemCreateResponse();
             response.setId(updatedCartItem.getId());
             response.setProductName(existingProduct.getName());
             response.setQuantity(updatedCartItem.getQuantity());
@@ -99,7 +100,7 @@ public class CartItemController {
             cartService.calculateAmount(cartItem);
             CartItem createdCartItem = cartRepository.save(cartItem);
 
-            CartItemResponse response = new CartItemResponse();
+            CartItemCreateResponse response = new CartItemCreateResponse();
             response.setId(createdCartItem.getId());
             response.setProductName(existingProduct.getName());
             response.setQuantity(createdCartItem.getQuantity());
@@ -146,7 +147,6 @@ public class CartItemController {
             return ResponseEntity.ok(cartItemListResponse);
         } catch (ExistsException ex) {
             throw new ExistsException("Invalid token or user not found.");
-
         }
     }
 
@@ -238,7 +238,7 @@ public class CartItemController {
                 return ResponseEntity.notFound().build();
             }
         } catch (ExistsException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            throw new ExistsException("Invalid token or user not found.");
         }
     }
 

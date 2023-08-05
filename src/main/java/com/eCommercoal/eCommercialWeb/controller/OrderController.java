@@ -1,16 +1,15 @@
 package com.eCommercoal.eCommercialWeb.controller;
 
-import com.eCommercoal.eCommercialWeb.entity.CartItem;
-import com.eCommercoal.eCommercialWeb.entity.Customer;
-import com.eCommercoal.eCommercialWeb.entity.Order;
-import com.eCommercoal.eCommercialWeb.entity.OrderItem;
+import com.eCommercoal.eCommercialWeb.entity.*;
+import com.eCommercoal.eCommercialWeb.exception.ExistsException;
 import com.eCommercoal.eCommercialWeb.repository.CartRepository;
 import com.eCommercoal.eCommercialWeb.repository.CustomerRepository;
 import com.eCommercoal.eCommercialWeb.repository.OrderRepository;
-import com.eCommercoal.eCommercialWeb.request.OrderRequest;
+import com.eCommercoal.eCommercialWeb.response.OrderItemResponse;
 import com.eCommercoal.eCommercialWeb.response.OrderResponse;
 import com.eCommercoal.eCommercialWeb.service.CartService;
 import com.eCommercoal.eCommercialWeb.service.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/customer/{customerId}/orders")
+@RequestMapping("/orders")
 public class OrderController {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
@@ -40,22 +39,31 @@ public class OrderController {
         this.orderService = orderService;
         this.cartService = cartService;
     }
+    private Customer getUserFromToken(String token) {
+        Customer customer = customerRepository.findByToken(token);
+        if (customer != null) {
+            return customer;
+        }
+        throw new ExistsException("Invalid token or user not found.");
+    }
+
 
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@PathVariable Integer customerId, @RequestBody OrderRequest orderRequest) {
-        Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
-        if (optionalCustomer.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    public ResponseEntity<OrderResponse> createOrder(HttpServletRequest req) {
+        String token = req.getHeader("Authorization");
+        Customer customer = getUserFromToken(token);
+
+        if (customer == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        Customer customer = optionalCustomer.get();
-        List<CartItem> cartItems = cartRepository.findAllByUserId(customerId);
-
+        int id = customer.getId();
+        List<CartItem> cartItems = cartRepository.findAllByUserId(id);
         if (cartItems.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
+
         Order order = new Order();
-        order.setOrderDescription(orderRequest.getOrderDescription());
         order.setCustomer(customer);
         order.setTotalAmount(BigDecimal.ZERO);
 
@@ -83,12 +91,22 @@ public class OrderController {
 
         cartRepository.deleteAll(cartItems);
 
+        List<OrderItemResponse> orderedProductsList = new ArrayList<>();
+        for (OrderItem orderItem : createdOrder.getOrderItems()) {
+            OrderItemResponse orderedProduct = new OrderItemResponse();
+            orderedProduct.setProductId(orderItem.getProductId());
+            orderedProduct.setQuantity(orderItem.getQuantity());
+            orderedProduct.setAmount(orderItem.getAmount());
+            orderedProductsList.add(orderedProduct);
+        }
+
         OrderResponse response = new OrderResponse();
         response.setId(createdOrder.getId());
-        response.setOrderDescription(createdOrder.getOrderDescription());
         response.setTotalAmount(createdOrder.getTotalAmount());
         response.setCustomerId(createdOrder.getCustomer().getId());
+        response.setOrderItems(orderedProductsList);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 }

@@ -14,8 +14,6 @@ public class Order {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "order_description")
-    private String orderDescription;
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
@@ -46,13 +44,7 @@ public class Order {
         this.id = id;
     }
 
-    public String getOrderDescription() {
-        return orderDescription;
-    }
 
-    public void setOrderDescription(String orderDescription) {
-        this.orderDescription = orderDescription;
-    }
 
     public Customer getCustomer() {
         return customer;
@@ -78,10 +70,10 @@ public class Order {
         this.totalAmount = totalAmount;
     }
 
-    public Order(LocalDateTime dateTime, Integer id, String orderDescription, Customer customer, List<OrderItem> orderItems, BigDecimal totalAmount) {
+    public Order(LocalDateTime dateTime, Integer id,  Customer customer, List<OrderItem> orderItems, BigDecimal totalAmount) {
         this.dateTime = dateTime;
         this.id = id;
-        this.orderDescription = orderDescription;
+
         this.customer = customer;
         this.orderItems = orderItems;
         this.totalAmount = totalAmount;

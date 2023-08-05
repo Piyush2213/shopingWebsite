@@ -3,12 +3,17 @@ package com.eCommercoal.eCommercialWeb.controller;
 
 import com.eCommercoal.eCommercialWeb.entity.Product;
 import com.eCommercoal.eCommercialWeb.exception.CustomError;
+import com.eCommercoal.eCommercialWeb.exception.CustomResponse;
 import com.eCommercoal.eCommercialWeb.exception.ExistsException;
 import com.eCommercoal.eCommercialWeb.request.ProductRequest;
 import com.eCommercoal.eCommercialWeb.repository.ProductRepository;
 import com.eCommercoal.eCommercialWeb.response.ProductResponse;
+import com.eCommercoal.eCommercialWeb.response.ProductSummaryResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -43,19 +48,20 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProductResponse>> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        if (products.isEmpty()) {
-            throw new ExistsException("Nothing Added Yet.");
-        }
+    public ResponseEntity<List<ProductSummaryResponse>> getAllProducts(
+            @RequestParam(name = "page", defaultValue = "1") int page,
+            @RequestParam(name = "perPage", defaultValue = "20") int perPage) {
 
-        List<ProductResponse> responseList = new ArrayList<>();
+        Pageable pageable = PageRequest.of(page - 1, perPage);
+        Page<Product> productsPage = productRepository.findAll(pageable);
+        List<Product> products = productsPage.getContent();
+
+        List<ProductSummaryResponse> responseList = new ArrayList<>();
 
         for (Product product : products) {
-            ProductResponse response = new ProductResponse();
+            ProductSummaryResponse response = new ProductSummaryResponse();
             response.setId(product.getId());
             response.setName(product.getName());
-            response.setDescription(product.getDescription());
             response.setPrice(product.getPrice());
             response.setQuantity(product.getQuantity());
             response.setImageURL(product.getImageURL());
@@ -65,10 +71,18 @@ public class ProductController {
         return ResponseEntity.ok(responseList);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Long> getProductCount() {
+        long count = productRepository.count();
+        return ResponseEntity.ok(count);
+    }
+
+
+
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Integer id) {
-/*
-        try (BufferedReader br = new BufferedReader(new FileReader("/Users/piyush/Desktop/fashion.csv"))) {
+
+        /*try (BufferedReader br = new BufferedReader(new FileReader("/Users/piyush/Desktop/fashion.csv"))) {
             //ProductId,Gender,Category,SubCategory,ProductType,Colour,Usage,ProductTitle,Image,ImageURL
             //price, description, quantity
             String line;
@@ -95,8 +109,8 @@ public class ProductController {
             productRepository.saveAll(products);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
-*/
+        }*/
+
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {
             throw new ExistsException("Product Not Found");
@@ -106,7 +120,6 @@ public class ProductController {
         ProductResponse response = new ProductResponse();
         response.setId(product.getId());
         response.setName(product.getName());
-        response.setDescription(product.getDescription());
         response.setPrice(product.getPrice());
         response.setQuantity(product.getQuantity());
         response.setImageURL(product.getImageURL());
@@ -129,7 +142,6 @@ public class ProductController {
 
         Product newProduct = new Product();
         newProduct.setName(productRequest.getName());
-        newProduct.setDescription(productRequest.getDescription());
         newProduct.setPrice(productRequest.getPrice());
         newProduct.setQuantity(productRequest.getQuantity());
         newProduct.setImageURL(productRequest.getImageURL());
@@ -140,7 +152,6 @@ public class ProductController {
         ProductResponse response = new ProductResponse();
         response.setId(savedProduct.getId());
         response.setName(savedProduct.getName());
-        response.setDescription(savedProduct.getDescription());
         response.setPrice(savedProduct.getPrice());
         response.setQuantity(savedProduct.getQuantity());
         response.setImageURL(savedProduct.getImageURL());
@@ -160,7 +171,6 @@ public class ProductController {
 
         Product existingProduct = optionalProduct.get();
         existingProduct.setName(productRequest.getName());
-        existingProduct.setDescription(productRequest.getDescription());
         existingProduct.setPrice(productRequest.getPrice());
         existingProduct.setQuantity(productRequest.getQuantity());
         existingProduct.setImageURL(productRequest.getImageURL());
@@ -174,16 +184,18 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<CustomError> deleteProduct(@PathVariable Integer id) {
+    public ResponseEntity<CustomResponse> deleteProduct(@PathVariable Integer id) {
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {
-            throw new ExistsException("Product not Found.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new CustomResponse(false, "Product not found."));
         }
+
         productRepository.deleteById(id);
-        CustomError response = new CustomError("Product deleted successfully");
+        CustomResponse response = new CustomResponse(true, "Product deleted successfully");
 
         return ResponseEntity.ok(response);
     }
+
 
 
 }

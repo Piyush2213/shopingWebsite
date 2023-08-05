@@ -1,23 +1,31 @@
 package com.eCommercoal.eCommercialWeb.response;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class OrderResponse {
     private int id;
-    private String orderDescription;
+
     private BigDecimal totalAmount;
     private int customerId;
-    private String errorMessage;
-    public OrderResponse(String errorMessage) {
-        this.errorMessage = errorMessage;
+    private BigDecimal amount;
+    private List<OrderItemResponse> orderItems;
+
+
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public void setPrice(BigDecimal amount) {
+        this.amount = amount;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public List<OrderItemResponse> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItemResponse> orderItems) {
+        this.orderItems = orderItems;
     }
 
     public int getId() {
@@ -28,13 +36,7 @@ public class OrderResponse {
         this.id = id;
     }
 
-    public String getOrderDescription() {
-        return orderDescription;
-    }
 
-    public void setOrderDescription(String orderDescription) {
-        this.orderDescription = orderDescription;
-    }
 
     public BigDecimal getTotalAmount() {
         return totalAmount;
@@ -52,11 +54,14 @@ public class OrderResponse {
         this.customerId = customerId;
     }
 
-    public OrderResponse(int id, String orderDescription, BigDecimal totalAmount, int customerId) {
+    public OrderResponse(int id,  BigDecimal totalAmount, int customerId, List<OrderItemResponse> orderItems, BigDecimal amount) {
         this.id = id;
-        this.orderDescription = orderDescription;
+
         this.totalAmount = totalAmount;
         this.customerId = customerId;
+        this.orderItems = orderItems;
+        this.amount = amount;
+
     }
 
     public OrderResponse(){};

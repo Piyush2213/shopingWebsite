@@ -12,7 +12,7 @@ public class ProductResponse  {
     private String gender;
     private String pUsage;
 
-    private String description;
+
 
     private BigDecimal price;
 
@@ -83,13 +83,6 @@ public class ProductResponse  {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 
     public BigDecimal getPrice() {
         return price;
@@ -107,10 +100,10 @@ public class ProductResponse  {
         this.quantity = quantity;
     }
 
-    public ProductResponse(int id,String name, String description, BigDecimal price, int quantity, String imageURL) {
+    public ProductResponse(int id,String name,BigDecimal price, int quantity, String imageURL) {
         this.id = id;
         this.name = name;
-        this.description = description;
+
         this.price = price;
         this.quantity = quantity;
         this.imageURL = imageURL;
