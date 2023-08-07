@@ -5,6 +5,7 @@ import com.eCommercoal.eCommercialWeb.exception.ExistsException;
 import com.eCommercoal.eCommercialWeb.repository.CartRepository;
 import com.eCommercoal.eCommercialWeb.repository.CustomerRepository;
 import com.eCommercoal.eCommercialWeb.repository.OrderRepository;
+import com.eCommercoal.eCommercialWeb.repository.ProductRepository;
 import com.eCommercoal.eCommercialWeb.response.OrderItemResponse;
 import com.eCommercoal.eCommercialWeb.response.OrderResponse;
 import com.eCommercoal.eCommercialWeb.service.CartService;
@@ -24,12 +25,16 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/orders")
+@CrossOrigin(origins = {"*"}, allowedHeaders = {"*"}, exposedHeaders = {"*"}, methods = {RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST, RequestMethod.PUT})
+
 public class OrderController {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
     private final CustomerRepository customerRepository;
     private final OrderService orderService;
     private final CartService cartService;
+    @Autowired
+    private ProductRepository productRepository;
 
     @Autowired
     public OrderController(OrderRepository orderRepository, CartRepository cartRepository, CustomerRepository customerRepository, OrderService orderService, CartService cartService) {
@@ -57,8 +62,7 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
         }
 
-        int id = customer.getId();
-        List<CartItem> cartItems = cartRepository.findAllByUserId(id);
+        List<CartItem> cartItems = cartRepository.findAllByUserId(customer.getId());
         if (cartItems.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
@@ -96,7 +100,6 @@ public class OrderController {
             OrderItemResponse orderedProduct = new OrderItemResponse();
             orderedProduct.setProductId(orderItem.getProductId());
             orderedProduct.setQuantity(orderItem.getQuantity());
-            orderedProduct.setAmount(orderItem.getAmount());
             orderedProductsList.add(orderedProduct);
         }
 
@@ -108,5 +111,49 @@ public class OrderController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+
+
+
+    @GetMapping
+    public ResponseEntity<List<OrderResponse>> getAllOrders(HttpServletRequest req) {
+        String token = req.getHeader("Authorization");
+        Customer customer = getUserFromToken(token);
+
+        if (customer == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        List<Order> orders = orderRepository.findAllByCustomerId(customer.getId());
+        List<OrderResponse> orderResponses = new ArrayList<>();
+
+        for (Order order : orders) {
+            List<OrderItemResponse> orderedProductsList = new ArrayList<>();
+            for (OrderItem orderItem : order.getOrderItems()) {
+                OrderItemResponse orderedProduct = new OrderItemResponse();
+                orderedProduct.setProductId(orderItem.getProductId());
+                orderedProduct.setQuantity(orderItem.getQuantity());
+                Product product = productRepository.findById(orderItem.getProductId()).orElse(null);
+                if (product != null) {
+                    orderedProduct.setProductName(product.getName());
+                    orderedProduct.setProductImageURL(product.getImageURL());
+                    orderedProduct.setPrice(product.getPrice());
+                }
+                orderedProductsList.add(orderedProduct);
+            }
+
+            OrderResponse orderResponse = new OrderResponse();
+            orderResponse.setId(order.getId());
+            orderResponse.setTotalAmount(order.getTotalAmount());
+            orderResponse.setCustomerId(order.getCustomer().getId());
+            orderResponse.setOrderItems(orderedProductsList);
+
+            orderResponses.add(orderResponse);
+        }
+
+        return ResponseEntity.ok(orderResponses);
+    }
+
+
 
 }

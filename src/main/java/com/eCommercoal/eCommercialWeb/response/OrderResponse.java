@@ -8,17 +8,11 @@ public class OrderResponse {
 
     private BigDecimal totalAmount;
     private int customerId;
-    private BigDecimal amount;
+
     private List<OrderItemResponse> orderItems;
 
 
-    public BigDecimal getAmount() {
-        return amount;
-    }
 
-    public void setPrice(BigDecimal amount) {
-        this.amount = amount;
-    }
 
     public List<OrderItemResponse> getOrderItems() {
         return orderItems;
@@ -54,13 +48,13 @@ public class OrderResponse {
         this.customerId = customerId;
     }
 
-    public OrderResponse(int id,  BigDecimal totalAmount, int customerId, List<OrderItemResponse> orderItems, BigDecimal amount) {
+    public OrderResponse(int id,  BigDecimal totalAmount, int customerId, List<OrderItemResponse> orderItems) {
         this.id = id;
 
         this.totalAmount = totalAmount;
         this.customerId = customerId;
         this.orderItems = orderItems;
-        this.amount = amount;
+
 
     }
 
