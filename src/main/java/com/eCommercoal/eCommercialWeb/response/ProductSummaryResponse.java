@@ -9,6 +9,7 @@ public class ProductSummaryResponse {
     private BigDecimal price;
     private String description;
     private int quantity;
+    
 
     public int getId() {
         return id;

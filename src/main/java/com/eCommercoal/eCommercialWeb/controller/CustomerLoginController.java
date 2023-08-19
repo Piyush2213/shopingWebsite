@@ -7,8 +7,10 @@ import com.eCommercoal.eCommercialWeb.repository.CustomerRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,11 +35,16 @@ public class CustomerLoginController {
         return ResponseEntity.ok(new CustomerLoginResponse(token));
     }
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletRequest req) {
+    @Transactional
+    public ResponseEntity<Void> logout(HttpServletRequest req,  HttpServletResponse res) {
         String token = req.getHeader("Authorization");
         Customer customer = getUserFromToken(token);
         if (customer != null) {
             customerRepository.updateToken(customer.getId(), null);
+            Cookie tokenCookie = new Cookie("token", null);
+            tokenCookie.setMaxAge(0);
+            tokenCookie.setPath("/");
+            res.addCookie(tokenCookie);
             return ResponseEntity.ok().build();
         } else {
             throw new RuntimeException("Invalid token");
@@ -55,7 +62,9 @@ public class CustomerLoginController {
         byte[] keyBytes = Keys.secretKeyFor(SignatureAlgorithm.HS512).getEncoded();
 
         String token = Jwts.builder()
+
                 .setSubject(customer.getEmail())
+                .claim("name", customer.getFirstName())
                 .signWith(SignatureAlgorithm.HS512, keyBytes)
                 .compact();
 

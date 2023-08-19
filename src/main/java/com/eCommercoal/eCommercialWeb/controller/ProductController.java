@@ -50,10 +50,22 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<List<ProductSummaryResponse>> getAllProducts(
             @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "perPage", defaultValue = "20") int perPage) {
+            @RequestParam(name = "perPage", defaultValue = "20") int perPage,
+            @RequestParam(name = "q", required = false) String searchTerm,
+            @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
+            @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice) {
 
         Pageable pageable = PageRequest.of(page - 1, perPage);
-        Page<Product> productsPage = productRepository.findAll(pageable);
+        Page<Product> productsPage;
+
+        if (searchTerm != null) {
+            productsPage = productRepository.findByNameContainingIgnoreCase(searchTerm, pageable);
+        } else if (minPrice != null && maxPrice != null) {
+            productsPage = productRepository.findByPriceBetween(minPrice, maxPrice, pageable);
+        } else {
+            productsPage = productRepository.findAll(pageable);
+        }
+
         List<Product> products = productsPage.getContent();
 
         List<ProductSummaryResponse> responseList = new ArrayList<>();
@@ -70,6 +82,8 @@ public class ProductController {
 
         return ResponseEntity.ok(responseList);
     }
+
+
 
     @GetMapping("/count")
     public ResponseEntity<Long> getProductCount() {
