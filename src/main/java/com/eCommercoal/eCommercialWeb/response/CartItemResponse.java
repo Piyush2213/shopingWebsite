@@ -12,6 +12,15 @@ public class CartItemResponse {
 
     private int quantity;
     private BigDecimal amount;
+    private int productId;
+
+    public int getProductId() {
+        return productId;
+    }
+
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
 
 
 
@@ -57,12 +66,13 @@ public class CartItemResponse {
         this.amount = amount;
     }
 
-    public CartItemResponse(int id, String productName, int quantity, BigDecimal amount, String imageURL) {
+    public CartItemResponse(int id, String productName, int quantity, BigDecimal amount, String imageURL, int productId) {
         this.id = id;
         this.productName = productName;
         this.quantity = quantity;
         this.amount = amount;
         this.imageURL = imageURL;
+        this.productId = productId;
 
     }
     public CartItemResponse(){};

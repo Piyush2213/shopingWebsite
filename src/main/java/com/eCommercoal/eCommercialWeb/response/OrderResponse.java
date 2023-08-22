@@ -1,6 +1,7 @@
 package com.eCommercoal.eCommercialWeb.response;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class OrderResponse {
@@ -10,9 +11,24 @@ public class OrderResponse {
     private int customerId;
 
     private List<OrderItemResponse> orderItems;
+    private LocalDateTime dateTime;
+    private List<Long> productIds;
 
+    public List<Long> getProductIds() {
+        return productIds;
+    }
 
+    public void setProductIds(List<Long> productIds) {
+        this.productIds = productIds;
+    }
 
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
 
     public List<OrderItemResponse> getOrderItems() {
         return orderItems;
@@ -48,12 +64,14 @@ public class OrderResponse {
         this.customerId = customerId;
     }
 
-    public OrderResponse(int id,  BigDecimal totalAmount, int customerId, List<OrderItemResponse> orderItems) {
+    public OrderResponse(int id,  BigDecimal totalAmount, int customerId, List<OrderItemResponse> orderItems, LocalDateTime dateTime, List<Long> productIds) {
         this.id = id;
 
         this.totalAmount = totalAmount;
         this.customerId = customerId;
         this.orderItems = orderItems;
+        this.dateTime = dateTime;
+        this.productIds = productIds;
 
 
     }

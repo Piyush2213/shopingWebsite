@@ -75,7 +75,6 @@ public class ProductController {
             response.setId(product.getId());
             response.setName(product.getName());
             response.setPrice(product.getPrice());
-            response.setQuantity(product.getQuantity());
             response.setImageURL(product.getImageURL());
             responseList.add(response);
         }

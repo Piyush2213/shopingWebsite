@@ -132,6 +132,7 @@ public class CartItemController {
                     cartService.calculateAmount(cartItem);
                     CartItemResponse response = new CartItemResponse();
                     response.setId(cartItem.getId());
+                    response.setProductId(product.getId());
                     response.setImageURL(product.getImageURL());
                     response.setProductName(product.getName());
                     response.setQuantity(cartItem.getQuantity());
@@ -168,6 +169,7 @@ public class CartItemController {
                 if (product != null) {
                     CartItemResponse response = new CartItemResponse();
                     response.setId(existingCartItem.getId());
+                    response.setProductId(product.getId());
                     response.setImageURL(product.getImageURL());
                     response.setProductName(product.getName());
                     response.setQuantity(existingCartItem.getQuantity());

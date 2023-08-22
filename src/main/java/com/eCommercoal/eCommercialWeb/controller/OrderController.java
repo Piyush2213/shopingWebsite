@@ -108,6 +108,7 @@ public class OrderController {
         response.setTotalAmount(createdOrder.getTotalAmount());
         response.setCustomerId(createdOrder.getCustomer().getId());
         response.setOrderItems(orderedProductsList);
+        response.setDateTime(createdOrder.getDateTime());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -130,11 +131,13 @@ public class OrderController {
         for (Order order : orders) {
             List<OrderItemResponse> orderedProductsList = new ArrayList<>();
             for (OrderItem orderItem : order.getOrderItems()) {
+
                 OrderItemResponse orderedProduct = new OrderItemResponse();
                 orderedProduct.setProductId(orderItem.getProductId());
                 orderedProduct.setQuantity(orderItem.getQuantity());
                 Product product = productRepository.findById(orderItem.getProductId()).orElse(null);
                 if (product != null) {
+                    orderedProduct.setProductId(product.getId());
                     orderedProduct.setProductName(product.getName());
                     orderedProduct.setProductImageURL(product.getImageURL());
                     orderedProduct.setPrice(product.getPrice());
@@ -147,6 +150,7 @@ public class OrderController {
             orderResponse.setTotalAmount(order.getTotalAmount());
             orderResponse.setCustomerId(order.getCustomer().getId());
             orderResponse.setOrderItems(orderedProductsList);
+            orderResponse.setDateTime(order.getDateTime());
 
             orderResponses.add(orderResponse);
         }

@@ -32,7 +32,10 @@ public class CustomerLoginController {
 
         String token = generateToken(customer);
 
-        return ResponseEntity.ok(new CustomerLoginResponse(token));
+        String capitalizedFirstName = capitalizeFirstLetter(customer.getFirstName());
+        CustomerLoginResponse response = new CustomerLoginResponse(token, capitalizedFirstName);
+
+        return ResponseEntity.ok(response);
     }
     @PostMapping("/logout")
     @Transactional
@@ -60,7 +63,7 @@ public class CustomerLoginController {
 
     private String generateToken(Customer customer) {
         byte[] keyBytes = Keys.secretKeyFor(SignatureAlgorithm.HS512).getEncoded();
-
+        String firstName = capitalizeFirstLetter(customer.getFirstName());
         String token = Jwts.builder()
 
                 .setSubject(customer.getEmail())
@@ -72,5 +75,11 @@ public class CustomerLoginController {
         customerRepository.updateToken(customer.getId(), token);
 
         return token;
+    }
+    private String capitalizeFirstLetter(String str) {
+        if (str == null || str.isEmpty()) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 }
