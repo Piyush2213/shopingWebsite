@@ -39,7 +39,7 @@ services:
   frontend:
       container_name: frontend
       build:
-        context: ./React-main
+        context: ./React
       depends_on:
         - appservice
       ports:
