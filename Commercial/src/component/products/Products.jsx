@@ -10,6 +10,9 @@ import { useNavigate } from 'react-router-dom';
 
 
 export function Products() {
+  useEffect(() => {
+    document.title = "Ebay";
+}, []);
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);

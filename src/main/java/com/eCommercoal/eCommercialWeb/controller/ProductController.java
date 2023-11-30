@@ -32,20 +32,7 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
-    private BigDecimal getRandomPrice() {
-        Random random = new Random();
-        int minPrice = 100;
-        int maxPrice = 200000;
-        int randomPrice = random.nextInt(maxPrice - minPrice + 1) + minPrice;
-        return BigDecimal.valueOf(randomPrice);
-    }
-
-    private int getRandomQuantity() {
-        Random random = new Random();
-        int minQuantity = 1;
-        int maxQuantity = 1000;
-        return random.nextInt(maxQuantity - minQuantity + 1) + minQuantity;
-    }
+    
 
     @GetMapping
     public ResponseEntity<List<ProductSummaryResponse>> getAllProducts(
@@ -94,35 +81,6 @@ public class ProductController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Integer id) {
-
-        /*try (BufferedReader br = new BufferedReader(new FileReader("fashion.csv"))) {
-            //ProductId,Gender,Category,SubCategory,ProductType,Colour,Usage,ProductTitle,Image,ImageURL
-            //price, description, quantity
-            String line;
-            List<Product> products = new ArrayList();
-            br.readLine();
-            while ((line = br.readLine()) != null) {
-                List<String> values = Arrays.asList(line.split(","));
-                Product product = new Product(
-                        Integer.parseInt(values.get(0)), //productId
-                        values.get(1),//Gender
-                        values.get(2),//category
-                        values.get(3),//subCategory
-                        values.get(4),//productType
-                        values.get(5),//colour
-                        values.get(6),//usage
-                        values.get(7),//productTitle
-                        values.get(9)//imageURL
-                );
-                product.setPrice(getRandomPrice());
-                product.setQuantity(getRandomQuantity());
-
-                products.add(product);
-            }
-            productRepository.saveAll(products);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
 
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {

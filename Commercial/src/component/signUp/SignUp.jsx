@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import axios from 'axios';
 import base_url from '../baseUrl/BaseUrl';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+
+import { useNavigate, Link } from 'react-router-dom';
 import { Header } from '../header/Header';
 import { Footer } from '../footer/Footer';
 
 export const SignUp = () => {
+    useEffect(() => {
+        document.title = "Sign Up";
+    },);
     const navigate = useNavigate();
 
     const [signUpData, setSignUpData] = useState({
@@ -51,9 +55,9 @@ export const SignUp = () => {
                         </h2>
                         <p className="mt-2 text-center text-base text-gray-600">
                             Already have an account?{' '}
-                            <a href="/login" className="font-medium text-black transition-all duration-200 hover:underline">
+                            <Link to="/login" className="font-medium text-black transition-all duration-200 hover:underline">
                                 Sign In
-                            </a>
+                            </Link>
                         </p>
                         <form onSubmit={handleFormSubmit} className="mt-8">
                             <div className="space-y-5">
@@ -178,5 +182,3 @@ export const SignUp = () => {
 
     );
 };
-
-

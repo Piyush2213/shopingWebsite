@@ -2,13 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Header } from '../header/Header';
 import { Footer } from '../footer/Footer';
-import axios from 'axios'; 
+import axios from 'axios';
 import base_url from '../baseUrl/BaseUrl';
-import { useNavigate } from 'react-router-dom'; 
-import { toast } from 'react-toastify'; 
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
-
- 
 
 export function Login() {
     useEffect(() => {
@@ -63,13 +61,9 @@ export function Login() {
                         </h2>
                         <p className="mt-2 text-center text-sm text-gray-600 ">
                             Don&apos;t have an account?{' '}
-                            <a
-                                href="/signup"
-                                title=""
-                                className="font-semibold text-black transition-all duration-200 hover:underline"
-                            >
+                            <Link to="/signup" className="font-semibold text-black transition-all duration-200 hover:underline">
                                 Create a free account
-                            </a>
+                            </Link>
                         </p>
                         <form onSubmit={handleFormSubmit} className="mt-8">
                             <div className="space-y-5">

@@ -1,8 +1,11 @@
-import React from 'react';
+import {React, useEffect} from 'react';
 import { Header } from '../header/Header';
 import { Footer } from '../footer/Footer';
 
 export function Contact() {
+  useEffect(() => {
+    document.title = "Contact";
+}, []);
   return (
     <div>
       <Header />

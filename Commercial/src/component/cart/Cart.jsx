@@ -9,6 +9,9 @@ import { Footer } from '../footer/Footer';
 import { useNavigate } from 'react-router-dom';
 
 export function Cart() {
+    useEffect(() => {
+        document.title = "Ebay's Cart";
+    }, []);
     const [cartItems, setCartItems] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
     const [userDetails, setUserDetails] = useState(null);

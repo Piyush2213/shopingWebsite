@@ -1,4 +1,4 @@
-import React from 'react';
+import {React, useEffect} from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import { Header } from '../header/Header';
 
@@ -59,6 +59,9 @@ const DecorativeDivider = styled.hr`
 `;
 
 export const AboutUs = () => {
+  useEffect(() => {
+    document.title = "About";
+}, []);
     return (
         <>
             <Header />

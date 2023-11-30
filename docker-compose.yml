@@ -30,6 +30,7 @@ services:
       LOGGING_LEVEL_ORG_HIBERNATE_SQL: DEBUG
       LOGGING_LEVEL_ORG_HIBERNATE_TYPE_DESCRIPTOR_SQL_BASICBINDER: TRACE
       SPRING_JPA_GENERATE_DDL: "true"
+      CHOKIDAR_USEPOLLING: "true"
     volumes:
       - app_data:/path/to/app_data
     ports:
@@ -40,26 +41,25 @@ services:
 
   frontend:
       container_name: frontend
-      build:
-        context: ./Commercial
+      build: ./Commercial
       depends_on:
         - appservice
       ports:
-        - 3000:3000
+        - 5173:5173
       stdin_open: true
       environment:
-        - CHOKIDAR_USEPOLLING=true
-      command: npm start
+        CHOKIDAR_USEPOLLING: "true"
+      command: npm run dev
       networks:
         - bootapp
       volumes:
-      - frontend_data:/path/to/frontend_data
+      - /app/node_modules
+      - ./Commercial:/app
 
 networks:
   bootapp:
 
 volumes:
   db_data:
-    external: true
   app_data:
-  frontend_data:
+  
