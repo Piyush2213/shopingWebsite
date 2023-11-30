@@ -95,7 +95,7 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProductById(@PathVariable Integer id) {
 
-        try (BufferedReader br = new BufferedReader(new FileReader("fashion.csv"))) {
+        /*try (BufferedReader br = new BufferedReader(new FileReader("fashion.csv"))) {
             //ProductId,Gender,Category,SubCategory,ProductType,Colour,Usage,ProductTitle,Image,ImageURL
             //price, description, quantity
             String line;
@@ -122,7 +122,7 @@ public class ProductController {
             productRepository.saveAll(products);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
         Optional<Product> optionalProduct = productRepository.findById(id);
         if (optionalProduct.isEmpty()) {

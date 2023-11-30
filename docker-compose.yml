@@ -11,7 +11,8 @@ services:
       retries: 10
     ports:
       - 3306:3306
-
+    volumes:
+      - db_data:/var/lib/mysql
     networks:
       - bootapp
 
@@ -29,7 +30,8 @@ services:
       LOGGING_LEVEL_ORG_HIBERNATE_SQL: DEBUG
       LOGGING_LEVEL_ORG_HIBERNATE_TYPE_DESCRIPTOR_SQL_BASICBINDER: TRACE
       SPRING_JPA_GENERATE_DDL: "true"
-
+    volumes:
+      - app_data:/path/to/app_data
     ports:
       - 8080:8080
     networks:
@@ -39,7 +41,7 @@ services:
   frontend:
       container_name: frontend
       build:
-        context: ./React
+        context: ./Commercial
       depends_on:
         - appservice
       ports:
@@ -50,6 +52,14 @@ services:
       command: npm start
       networks:
         - bootapp
+      volumes:
+      - frontend_data:/path/to/frontend_data
 
 networks:
   bootapp:
+
+volumes:
+  db_data:
+    external: true
+  app_data:
+  frontend_data:
