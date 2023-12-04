@@ -1,18 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import axios from 'axios';
 import base_url from '../baseUrl/BaseUrl';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
 import { useNavigate, Link } from 'react-router-dom';
 import { Header } from '../header/Header';
 import { Footer } from '../footer/Footer';
 
 export const SignUp = () => {
-    useEffect(() => {
-        document.title = "Sign Up";
-    },);
     const navigate = useNavigate();
 
     const [signUpData, setSignUpData] = useState({
@@ -23,6 +17,8 @@ export const SignUp = () => {
         password: '',
         address: ''
     });
+
+    const [successMessage, setSuccessMessage] = useState('');
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -36,11 +32,13 @@ export const SignUp = () => {
             const response = await axios.post(`${base_url}/customers/signup`, signUpData);
 
             console.log(response);
-            toast.success('Sign up successful!');
-            navigate('/login');
+            setSuccessMessage('Sign up successful! Redirecting to login...');
+            setTimeout(() => {
+                navigate('/login');
+            }, 2000); 
         } catch (error) {
             console.error(error);
-            toast.error('Unable to sign up. Please check your information and try again.');
+            setSuccessMessage('Unable to sign up. Already have an account.');
         }
     };
 
@@ -59,12 +57,18 @@ export const SignUp = () => {
                                 Sign In
                             </Link>
                         </p>
+
+                        {successMessage && (
+                            <div className="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded-md">
+                                {successMessage}
+                            </div>
+                        )}
+
                         <form onSubmit={handleFormSubmit} className="mt-8">
                             <div className="space-y-5">
                                 <div>
                                     <label htmlFor="firstName" className="text-base font-medium text-gray-900">
-                                        {' '}
-                                        First Name{' '}
+                                        First Name
                                     </label>
                                     <div className="mt-2">
                                         <input
@@ -78,10 +82,10 @@ export const SignUp = () => {
                                         />
                                     </div>
                                 </div>
+
                                 <div>
                                     <label htmlFor="lastName" className="text-base font-medium text-gray-900">
-                                        {' '}
-                                        Last Name{' '}
+                                        Last Name
                                     </label>
                                     <div className="mt-2">
                                         <input
@@ -95,10 +99,10 @@ export const SignUp = () => {
                                         />
                                     </div>
                                 </div>
+
                                 <div>
                                     <label htmlFor="phone" className="text-base font-medium text-gray-900">
-                                        {' '}
-                                        Phone{' '}
+                                        Phone
                                     </label>
                                     <div className="mt-2">
                                         <input
@@ -112,10 +116,10 @@ export const SignUp = () => {
                                         />
                                     </div>
                                 </div>
+
                                 <div>
                                     <label htmlFor="address" className="text-base font-medium text-gray-900">
-                                        {' '}
-                                        Address{' '}
+                                        Address
                                     </label>
                                     <div className="mt-2">
                                         <input
@@ -129,10 +133,10 @@ export const SignUp = () => {
                                         />
                                     </div>
                                 </div>
+
                                 <div>
                                     <label htmlFor="email" className="text-base font-medium text-gray-900">
-                                        {' '}
-                                        Email address{' '}
+                                        Email address
                                     </label>
                                     <div className="mt-2">
                                         <input
@@ -146,10 +150,10 @@ export const SignUp = () => {
                                         />
                                     </div>
                                 </div>
+
                                 <div>
                                     <label htmlFor="password" className="text-base font-medium text-gray-900">
-                                        {' '}
-                                        Password{' '}
+                                        Password
                                     </label>
                                     <div className="mt-2">
                                         <input
@@ -163,6 +167,7 @@ export const SignUp = () => {
                                         />
                                     </div>
                                 </div>
+
                                 <div>
                                     <button
                                         type="submit"
@@ -175,10 +180,8 @@ export const SignUp = () => {
                         </form>
                     </div>
                 </div>
-                <ToastContainer />
             </section>
             <Footer />
         </div>
-
     );
 };

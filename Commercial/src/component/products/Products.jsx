@@ -1,18 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
 import base_url from '../baseUrl/BaseUrl';
 import Cookies from 'js-cookie';
+import { Link } from 'react-router-dom';
 import { Footer } from '../footer/Footer';
 import { Header2 } from '../header2/header2';
 import { useNavigate } from 'react-router-dom';
 
+const SearchBar = ({ searchTerm, onSearch, onButtonClick }) => (
+  <div className="flex items-center space-x-2 mb-4">
+    <input
+      type="text"
+      placeholder="Search products..."
+      value={searchTerm}
+      onChange={onSearch}
+      className="border p-2 rounded-md"
+    />
+    <button
+      type="button"
+      onClick={onButtonClick}
+      className="bg-blue-500 text-white px-4 py-2 rounded-md"
+    >
+      Search
+    </button>
+  </div>
+);
 
 export function Products() {
   useEffect(() => {
-    document.title = "Ebay";
-}, []);
+    document.title = 'Ebay';
+  }, []);
+
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -21,26 +39,47 @@ export function Products() {
   const [noResultsMessage, setNoResultsMessage] = useState('');
   const username = Cookies.get('firstName');
   const token = Cookies.get('token');
-
   const navigate = useNavigate();
+
+  const [toastMessage, setToastMessage] = useState('');
+  const [isSuccessToast, setIsSuccessToast] = useState(true);
+
+  const showToast = (message, isSuccess = true) => {
+    setToastMessage(message);
+    setIsSuccessToast(isSuccess);
+
+    setTimeout(() => {
+      setToastMessage('');
+    }, 3000);
+  };
+
+  const showToastSuccess = (message) => {
+    showToast(message, true);
+  };
+
+  const showToastError = (message) => {
+    showToast(message, false);
+  };
 
   const handleAddToCart = async (productId) => {
     try {
+      if (!token) {
+        showToastError('Login to continue shopping');
+        navigate('/login');
+        return;
+      }
+
       const responseMessage = await addToCart(productId);
-      toast.success(responseMessage);
-      if(token){navigate('/cart');}
-      
+      showToastSuccess(responseMessage);
+
+      navigate('/cart');
     } catch (error) {
-      toast.error(error.message);
+      showToastError(error.message);
     }
   };
 
   const addToCart = async (productId) => {
     try {
-      if (!token ) {
-        navigate('/login');
-        return 'Login to continue shopping';
-      }
       const response = await axios.post(
         `${base_url}/carts/cartItems`,
         {
@@ -66,7 +105,6 @@ export function Products() {
       throw new Error('Failed to add product to cart.');
     }
   };
-
 
   useEffect(() => {
     async function fetchProductCount() {
@@ -123,17 +161,19 @@ export function Products() {
     setSearchTerm(e.target.value);
   };
 
+  const handleSearchButtonClick = () => {
+    // You can perform additional actions on button click if needed
+    handleSearch({ preventDefault: () => {} });
+  };
+
   return (
     <div>
       <Header2 username={username} token={token} />
-      <div>
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-      </div>
+      <SearchBar
+        searchTerm={searchTerm}
+        onSearch={handleSearch}
+        onButtonClick={handleSearchButtonClick}
+      />
       <div className="mx-auto grid w-full max-w-7xl items-center space-y-4 px-2 py-10 md:grid-cols-2 md:gap-6 md:space-y-0 lg:grid-cols-4">
         {products.map((product) => (
           <div key={product.id}>
@@ -186,6 +226,15 @@ export function Products() {
           Next
         </button>
       </div>
+      {toastMessage && (
+        <div
+          className={`fixed bottom-4 right-4 p-4 ${
+            isSuccessToast ? 'bg-green-500' : 'bg-red-500'
+          } text-white rounded-md`}
+        >
+          {toastMessage}
+        </div>
+      )}
       <Footer />
     </div>
   );

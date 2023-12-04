@@ -5,7 +5,6 @@ import { Footer } from '../footer/Footer';
 import axios from 'axios';
 import base_url from '../baseUrl/BaseUrl';
 import { Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import Cookies from 'js-cookie';
 
 export function Login() {
@@ -15,30 +14,44 @@ export function Login() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const navigate = useNavigate();
 
     const handleFormSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
             const response = await axios.post(`${base_url}/customers/login`, { email, password });
             const data = response.data;
-
+    
             if (data.token) {
-                toast.success('Login successful!');
+                setErrorMessage('');
                 Cookies.set('token', data.token);
                 Cookies.set('firstName', data.firstName);
                 navigate('/products');
             } else {
-                toast.error('Invalid email or password. Please try again.');
+                setErrorMessage('Invalid email or password. Please try again.');
             }
         } catch (error) {
-            alert("Invalid email or password.")
             console.log('Error:', error);
-            toast.error('An error occurred. Please try again later.');
+    
+            if (error.response) {
+                console.log('Error Response:', error.response);
+                if (error.response.status === 500) {
+                    setErrorMessage('An error occurred on the server. Please try again later.');
+                } else if (error.response.status === 401) {
+                    setErrorMessage('Invalid email or password. Please try again.');
+                } else {
+                    setErrorMessage('An unexpected error occurred. Please try again later.');
+                }
+            } else {
+                setErrorMessage('An unexpected error occurred. Please try again later.');
+            }
         }
     };
+    
+    
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
@@ -65,6 +78,11 @@ export function Login() {
                                 Create a free account
                             </Link>
                         </p>
+                        {errorMessage && (
+                            <div className="mt-4 bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded-md">
+                                {errorMessage}
+                            </div>
+                        )}
                         <form onSubmit={handleFormSubmit} className="mt-8">
                             <div className="space-y-5">
                                 <div>
@@ -81,7 +99,7 @@ export function Login() {
                                             className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                                             type="email"
                                             placeholder="Email"
-                                        ></input>
+                                        />
                                     </div>
                                 </div>
                                 <div>
@@ -90,7 +108,6 @@ export function Login() {
                                             {' '}
                                             Password{' '}
                                         </label>
-
                                     </div>
                                     <div className="mt-2">
                                         <input
@@ -101,7 +118,7 @@ export function Login() {
                                             className="flex h-10 w-full rounded-md border border-gray-300 bg-transparent px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-1 focus:ring-gray-400 focus:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50"
                                             type="password"
                                             placeholder="Password"
-                                        ></input>
+                                        />
                                     </div>
                                 </div>
                                 <div>
@@ -114,7 +131,6 @@ export function Login() {
                                 </div>
                             </div>
                         </form>
-
                     </div>
                 </div>
             </section>
