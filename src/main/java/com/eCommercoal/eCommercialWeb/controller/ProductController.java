@@ -2,7 +2,6 @@ package com.eCommercoal.eCommercialWeb.controller;
 
 
 import com.eCommercoal.eCommercialWeb.entity.Product;
-import com.eCommercoal.eCommercialWeb.exception.CustomError;
 import com.eCommercoal.eCommercialWeb.exception.CustomResponse;
 import com.eCommercoal.eCommercialWeb.exception.ExistsException;
 import com.eCommercoal.eCommercialWeb.request.ProductRequest;
@@ -18,10 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -31,8 +26,6 @@ import java.util.*;
 public class ProductController {
     @Autowired
     private ProductRepository productRepository;
-
-    
 
     @GetMapping
     public ResponseEntity<List<ProductSummaryResponse>> getAllProducts(

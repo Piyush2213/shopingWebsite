@@ -1,7 +1,7 @@
 package com.eCommercoal.eCommercialWeb.controller;
 
 import com.eCommercoal.eCommercialWeb.entity.ProductES;
-import com.eCommercoal.eCommercialWeb.repository.ProductESRepository;
+import com.eCommercoal.eCommercialWeb.esRepository.ProductESRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -39,10 +39,11 @@ public class DataInitializerES {
                 String line;
                 List<ProductES> products = new ArrayList<>();
                 br.readLine();
+                int id = 1;
                 while ((line = br.readLine()) != null) {
                     List<String> values = Arrays.asList(line.split(","));
                     ProductES product = new ProductES(
-                            Integer.parseInt(values.get(0)),
+                            id++,
                             values.get(7), // productTitle
                             getRandomPrice()
                     );

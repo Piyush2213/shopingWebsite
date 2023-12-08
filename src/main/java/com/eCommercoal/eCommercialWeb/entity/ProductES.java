@@ -2,13 +2,18 @@ package com.eCommercoal.eCommercialWeb.entity;
 
 import jakarta.persistence.*;
 import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
+
 import java.math.BigDecimal;
 
 @Document(indexName = "product_index")
 public class ProductES {
     @Id
     private int id;
+    @Field(type = FieldType.Text, analyzer = "standard")
     private String name;
+    @Field(type = FieldType.Keyword)
     private BigDecimal price;
 
 
