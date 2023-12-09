@@ -1,7 +1,10 @@
 package com.eCommercoal.eCommercialWeb.controller;
 
 
+import co.elastic.clients.elasticsearch.core.SearchResponse;
+import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.eCommercoal.eCommercialWeb.entity.Product;
+import com.eCommercoal.eCommercialWeb.entity.ProductES;
 import com.eCommercoal.eCommercialWeb.exception.CustomError;
 import com.eCommercoal.eCommercialWeb.exception.CustomResponse;
 import com.eCommercoal.eCommercialWeb.exception.ExistsException;
@@ -9,6 +12,7 @@ import com.eCommercoal.eCommercialWeb.request.ProductRequest;
 import com.eCommercoal.eCommercialWeb.repository.ProductRepository;
 import com.eCommercoal.eCommercialWeb.response.ProductResponse;
 import com.eCommercoal.eCommercialWeb.response.ProductSummaryResponse;
+import com.eCommercoal.eCommercialWeb.service.ElasticSearchService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.data.domain.Page;
@@ -31,6 +35,21 @@ import java.util.*;
 public class ProductController {
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private ElasticSearchService elasticSearchService;
+
+
+    @GetMapping("/fuzzySearch/{approximateProductName}")
+    List<ProductES> fuzzySearch(@PathVariable String approximateProductName) throws IOException{
+        SearchResponse<ProductES> searchResponse = elasticSearchService.fuzzySearch(approximateProductName);
+        List<Hit<ProductES>> hitList = searchResponse.hits().hits();
+        System.out.println(hitList);
+        List<ProductES> productList = new ArrayList<>();
+        for (Hit<ProductES> hit :hitList){
+            productList.add(hit.source());
+        }
+        return productList;
+    }
 
     
 

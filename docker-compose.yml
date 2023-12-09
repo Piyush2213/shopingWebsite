@@ -21,18 +21,13 @@ services:
     depends_on:
        dbservice:
          condition: service_healthy
+       es8:
+         condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://dbservice:3306/Marketing?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: Pk@123001
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
-      SPRING_DATA_ELASTICSEARCH_CLUSTER_NODES: localhost:9300
-      SPRING_ELASTICSEARCH_CLUSTER_NAME: my-elasticsearch-cluster
-      SPRING_DATA_ELASTICSEARCH_REPOSITORIES_INDEX_CREATION_STRATEGY: create
-      SPRING_DATA_ELASTICSEARCH_REPOSITORIES_INDEX_NAME: product_index
-      SPRING_ELASTICSEARCH_REST_CONNECTION_TIMEOUT: 10000
-      LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_DATA_ELASTICSEARCH: DEBUG
-      SPRING_ELASTICSEARCH_REPOSITORIES_ENABLED: none
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
       LOGGING_LEVEL_ORG_HIBERNATE_SQL: DEBUG
       LOGGING_LEVEL_ORG_HIBERNATE_TYPE_DESCRIPTOR_SQL_BASICBINDER: TRACE
@@ -41,7 +36,7 @@ services:
     volumes:
       - app_data:/path/to/app_data
     ports:
-      - 8081:8080
+      - 8080:8080
     networks:
       - bootapp
 
@@ -72,10 +67,16 @@ services:
       - cluster.name=es-docker-cluster
       - discovery.type=single-node
       - xpack.security.enabled=false
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200 || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
     volumes:
       - es8_data:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
+      - 9300:9300
     networks:
       - bootapp
 
