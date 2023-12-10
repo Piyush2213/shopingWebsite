@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,7 +52,7 @@ public class ProductController {
         return productList;
     }
 
-    
+
 
     @GetMapping
     public ResponseEntity<List<ProductSummaryResponse>> getAllProducts(
@@ -59,12 +60,24 @@ public class ProductController {
             @RequestParam(name = "perPage", defaultValue = "20") int perPage,
             @RequestParam(name = "q", required = false) String searchTerm,
             @RequestParam(name = "minPrice", required = false) BigDecimal minPrice,
-            @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice) {
+            @RequestParam(name = "maxPrice", required = false) BigDecimal maxPrice,
+            @RequestParam(name = "sort", defaultValue = "asc") String sort,
+            @RequestParam(name = "subcategories", required = false) List<String> subCategories) {
 
-        Pageable pageable = PageRequest.of(page - 1, perPage);
+        Pageable pageable;
+
+        if ("desc".equalsIgnoreCase(sort)) {
+            pageable = PageRequest.of(page - 1, perPage, Sort.by("price").descending());
+        } else {
+            pageable = PageRequest.of(page - 1, perPage, Sort.by("price").ascending());
+        }
+
         Page<Product> productsPage;
 
-        if (searchTerm != null) {
+        if (subCategories != null && !subCategories.isEmpty()) {
+            productsPage = productRepository.findBySubCategoryIn(subCategories, pageable);
+
+        } else if (searchTerm != null) {
             productsPage = productRepository.findByNameContainingIgnoreCase(searchTerm, pageable);
         } else if (minPrice != null && maxPrice != null) {
             productsPage = productRepository.findByPriceBetween(minPrice, maxPrice, pageable);
@@ -73,6 +86,7 @@ public class ProductController {
         }
 
         List<Product> products = productsPage.getContent();
+
 
         List<ProductSummaryResponse> responseList = new ArrayList<>();
 

@@ -18,6 +18,7 @@ public class ProductES {
     private int id;
     private String name;
     private BigDecimal price;
+    private String imageURL;
 
 
 }

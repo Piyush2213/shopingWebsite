@@ -7,8 +7,6 @@ public class ProductRequest {
 
     private String name;
     private String imageURL;
-
-
     private String description;
 
     private BigDecimal price;

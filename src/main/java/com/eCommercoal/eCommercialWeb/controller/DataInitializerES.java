@@ -45,7 +45,8 @@ public class DataInitializerES {
                     ProductES product = new ProductES(
                             id++,
                             values.get(7), // productTitle
-                            getRandomPrice()
+                            getRandomPrice(),
+                            values.get(9)  // imageURL
                     );
                     products.add(product);
                 }

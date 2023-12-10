@@ -6,8 +6,9 @@ import { Link } from 'react-router-dom';
 import { Footer } from '../footer/Footer';
 import { Header2 } from '../header2/header2';
 import { useNavigate } from 'react-router-dom';
+import ElasticsearchService from '../ElasticsearchService/ElasticsearchService';
 
-const SearchBar = ({ searchTerm, onSearch, onButtonClick }) => (
+const SearchBar = ({ searchTerm, onSearch, onButtonClick, selectedSubcategory, onSubcategorySelect }) => (
   <div className="flex items-center space-x-2 mb-4">
     <input
       type="text"
@@ -16,6 +17,7 @@ const SearchBar = ({ searchTerm, onSearch, onButtonClick }) => (
       onChange={onSearch}
       className="border p-2 rounded-md"
     />
+    
     <button
       type="button"
       onClick={onButtonClick}
@@ -23,8 +25,25 @@ const SearchBar = ({ searchTerm, onSearch, onButtonClick }) => (
     >
       Search
     </button>
+
+    <div className="flex items-center ml-400"> 
+      <select
+        value={selectedSubcategory}
+        onChange={onSubcategorySelect}
+        className="border p-2 rounded-md"
+      >
+        <option value="">All Subcategories</option>
+        <option value="Topwear">Tops</option>
+        <option value="BottomWear">Bottom</option>
+        <option value="Dress">Dresses</option>
+        <option value="Flip Flops">Flip Flop</option>
+        <option value="Shoes">Shoes</option>
+        <option value="Sandal">Sandal</option>
+      </select>
+    </div>
   </div>
 );
+
 
 export function Products() {
   useEffect(() => {
@@ -43,6 +62,8 @@ export function Products() {
 
   const [toastMessage, setToastMessage] = useState('');
   const [isSuccessToast, setIsSuccessToast] = useState(true);
+  const [activeButton, setActiveButton] = useState(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
 
   const showToast = (message, isSuccess = true) => {
     setToastMessage(message);
@@ -59,6 +80,11 @@ export function Products() {
 
   const showToastError = (message) => {
     showToast(message, false);
+  };
+
+  const handleSubcategorySelect = (e) => {
+    setSelectedSubcategory(e.target.value);
+    console.log('Selected Subcategory:', e.target.value);
   };
 
   const handleAddToCart = async (productId) => {
@@ -128,8 +154,12 @@ export function Products() {
             page: currentPage,
             perPage: perPage,
             q: searchTerm,
+            sort: 'desc',
+            subcategories: selectedSubcategory,
           },
+          
         });
+        console.log('Fetch Products Response:', response.data);
         if (response.data.length === 0) {
           setNoResultsMessage('No products found.');
         } else {
@@ -141,7 +171,7 @@ export function Products() {
       }
     }
     fetchProducts();
-  }, [currentPage, searchTerm]);
+  }, [currentPage, searchTerm, selectedSubcategory]);
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -161,19 +191,96 @@ export function Products() {
     setSearchTerm(e.target.value);
   };
 
-  const handleSearchButtonClick = () => {
-    // You can perform additional actions on button click if needed
-    handleSearch({ preventDefault: () => {} });
+  const handleSearchButtonClick = async () => {
+    try {
+      const searchResults = await ElasticsearchService.fuzzySearch(searchTerm);
+      setProducts(searchResults);
+    } catch (error) {
+      console.error('Error searching products:', error);
+    }
+  };
+
+  const handleSortByMaxPrice = async () => {
+    try {
+      const response = await axios.get(`${base_url}/products`, {
+        params: {
+          page: currentPage,
+          perPage: perPage,
+          q: searchTerm,
+          sort: 'desc',
+        },
+      });
+
+      if (response.data.length === 0) {
+        setNoResultsMessage('No products found.');
+      } else {
+        setNoResultsMessage('');
+      }
+
+      setProducts(response.data);
+      setActiveButton('max');
+    } catch (error) {
+      console.log('Error sorting products:', error);
+    }
+  };
+
+  const handleSortByMinPrice = async () => {
+    try {
+      const response = await axios.get(`${base_url}/products`, {
+        params: {
+          page: currentPage,
+          perPage: perPage,
+          q: searchTerm,
+          sort: 'asc',
+        },
+      });
+
+      if (response.data.length === 0) {
+        setNoResultsMessage('No products found.');
+      } else {
+        setNoResultsMessage('');
+      }
+
+      setProducts(response.data);
+      setActiveButton('min');
+    } catch (error) {
+      console.log('Error sorting products:', error);
+    }
   };
 
   return (
     <div>
       <Header2 username={username} token={token} />
+
       <SearchBar
         searchTerm={searchTerm}
         onSearch={handleSearch}
         onButtonClick={handleSearchButtonClick}
+        selectedSubcategory={selectedSubcategory}
+        onSubcategorySelect={handleSubcategorySelect}
       />
+
+      <div className="flex items-center justify-end space-x-4 mb-4">
+        <button
+          type="button"
+          onClick={handleSortByMaxPrice}
+          className={`bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 ${
+            activeButton === 'max' ? 'bg-green-600' : ''
+          }`}
+        >
+          Max Price
+        </button>
+        <button
+          type="button"
+          onClick={handleSortByMinPrice}
+          className={`bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 focus:outline-none focus:ring focus:border-blue-300 ${
+            activeButton === 'min' ? 'bg-green-600' : ''
+          }`}
+        >
+          Min Price
+        </button>
+      </div>
+
       <div className="mx-auto grid w-full max-w-7xl items-center space-y-4 px-2 py-10 md:grid-cols-2 md:gap-6 md:space-y-0 lg:grid-cols-4">
         {products.map((product) => (
           <div key={product.id}>
@@ -228,9 +335,8 @@ export function Products() {
       </div>
       {toastMessage && (
         <div
-          className={`fixed bottom-4 right-4 p-4 ${
-            isSuccessToast ? 'bg-green-500' : 'bg-red-500'
-          } text-white rounded-md`}
+          className={`fixed bottom-4 right-4 p-4 ${isSuccessToast ? 'bg-green-500' : 'bg-red-500'
+            } text-white rounded-md`}
         >
           {toastMessage}
         </div>

@@ -22,6 +22,7 @@ export function Login() {
         e.preventDefault();
     
         try {
+
             const response = await axios.post(`${base_url}/customers/login`, { email, password });
             const data = response.data;
     
