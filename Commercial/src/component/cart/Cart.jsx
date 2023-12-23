@@ -6,15 +6,19 @@ import { toast } from 'react-toastify';
 import base_url from '../baseUrl/BaseUrl';
 import { Header2 } from '../header2/header2';
 import { Footer } from '../footer/Footer';
+import AddressEntry from '../address/AddressEntry';
 import { useNavigate } from 'react-router-dom';
 
 export function Cart() {
     useEffect(() => {
         document.title = "Ebay's Cart";
     }, []);
+
     const [cartItems, setCartItems] = useState([]);
     const [totalAmount, setTotalAmount] = useState(0);
     const [userDetails, setUserDetails] = useState(null);
+    const [address, setAddress] = useState(null);
+    const [toastMessage, setToastMessage] = useState('');
     const token = Cookies.get('token');
     const username = Cookies.get('firstName');
     const navigate = useNavigate();
@@ -35,7 +39,7 @@ export function Cart() {
                     Authorization: token,
                 },
             });
-            console.log(response);
+
             setUserDetails(response.data.userDetails);
             setCartItems(response.data.cartItems);
             setTotalAmount(response.data.totalAmount);
@@ -61,30 +65,35 @@ export function Cart() {
             toast.error(error.message);
         }
     };
-    const handleBackToShop = () => {
-        navigate('/products');
-    };
 
     const handlePlaceOrder = async () => {
         try {
-            const token = Cookies.get('token');
             if (!token) {
+                setToastMessage('You need to log in first.');
                 throw new Error('You need to log in first.');
             }
+
+            if (cartItems.length === 0) {
+                setToastMessage('Nothing in the cart. Please add items to your cart before placing an order.');
+                return;
+            }
+
+            if (!address) {
+                setToastMessage('Please provide your address before placing the order.');                
+                return;
+            }
+
+            
             const response = await axios.post(
                 `${base_url}/orders`,
-                {
-                    cartItems: cartItems.map((item) => ({
-                        productId: item.productId,
-                        quantity: item.quantity,
-                    })),
-                },
+                address,
                 {
                     headers: {
                         Authorization: token,
                     },
                 }
             );
+
 
             if (response.status === 201) {
                 setCartItems([]);
@@ -95,7 +104,7 @@ export function Cart() {
                 throw new Error('Failed to place order.');
             }
         } catch (error) {
-            console.log('Error placing order:', error);
+            throw new Error('Error placing order:', error);
         }
     };
 
@@ -103,23 +112,15 @@ export function Cart() {
         <div>
             <Header2 username={username} token={token} />
             <div className="mx-auto flex max-w-3xl flex-col space-y-4 p-6 px-2 sm:p-10 sm:px-2">
-                <h2 className="text-3xl font-bold">Your cart</h2>
-                {userDetails && (
-                    <div className="flex items-center space-x-4">
-                        <img
-                            className="h-12 w-12 rounded-full object-cover"
-                            src={userDetails.profileImage}
-                            alt={userDetails.name}
-                        />
-                        <span className="text-lg font-semibold">{userDetails.name}</span>
+                <AddressEntry onAddressSubmit={setAddress} />
+                {toastMessage && (
+                    <div className="mt-4 bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded-md">
+                        {toastMessage}
                     </div>
                 )}
-                <p className="mt-3 text-sm font-medium text-gray-700">
-                    We are waiting for your Checkout! Hurry Up! Get your fastest delivery order today...
-                </p>
-                <ul className="flex flex-col divide-y divide-gray-200">
+                <div className="flex flex-col divide-y divide-gray-200">
                     {cartItems.map((cartItem) => (
-                        <li key={cartItem.id} className="flex flex-col py-6 sm:flex-row sm:justify-between">
+                        <div key={cartItem.id} className="flex flex-col py-6 sm:flex-row sm:justify-between">
                             <div className="flex w-full space-x-2 sm:space-x-4">
                                 <img
                                     className="h-20 w-20 flex-shrink-0 rounded object-contain outline-none dark:border-transparent sm:h-32 sm:w-32"
@@ -152,9 +153,9 @@ export function Cart() {
                                     </div>
                                 </div>
                             </div>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
                 <div className="space-y-1 text-right">
                     <p>
                         Total amount:
@@ -164,7 +165,7 @@ export function Cart() {
                 <div className="flex justify-end space-x-4">
                     <button
                         type="button"
-                        onClick={handleBackToShop}
+                        onClick={() => navigate('/products')}
                         className="rounded-md border border-black px-3 py-2 text-sm font-semibold text-black shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
                     >
                         Back to shop
@@ -177,7 +178,8 @@ export function Cart() {
                         Checkout
                     </button>
                 </div>
-            </div><Footer /></div>
-
+                <Footer />
+            </div>
+        </div>
     );
 }

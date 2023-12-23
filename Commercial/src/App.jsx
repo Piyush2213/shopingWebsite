@@ -9,6 +9,7 @@ import { Contact } from './component/contact/Contact'
 import { AboutUs } from './component/about/AboutUs'
 import { Cart } from './component/cart/Cart'
 import {Orders} from './component/orders/Orders'
+import AddressEntry from './component/address/AddressEntry'
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
         <Route path="/orders" element={<Orders />} />
         <Route path="/aboutus" element={<AboutUs />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/address-entry" element={<AddressEntry />} />
         <Route path="/products" element={<Products />} />
         <Route path="/products/:id" element={<ProductDetail />} />
       </Routes>

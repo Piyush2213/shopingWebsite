@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 export function Header2({ username, token }) {
@@ -14,7 +14,7 @@ export function Header2({ username, token }) {
       <div className="container relative z-10 mx-auto px-4">
         <div className="-m-8 flex flex-wrap items-center justify-between">
           <div className="w-auto p-8">
-            <Link to="/products">
+            <NavLink to="/products" activeClassName="active">
               <div className="inline-flex items-center">
                 <img
                   src="https://svgsilh.com/svg_v2/189064.svg"
@@ -26,27 +26,27 @@ export function Header2({ username, token }) {
                   <span className="font-medium text-gray-600 ml-12">{`Hello, ${username}!`}</span>
                 )}
               </div>
-            </Link>
+            </NavLink>
           </div>
           <div className="w-auto p-8">
             <ul className="-m-5 flex flex-wrap items-center">
               <li className="p-5">
-                <Link to="/products" className="font-medium text-gray-600 hover:text-gray-700">
+                <NavLink to="/products" activeClassName="active" className="font-medium text-gray-600 hover:text-gray-700">
                   Visit
-                </Link>
+                </NavLink>
               </li>
 
               {token ? (
                 <>
                   <li className="p-5">
-                    <Link to="/orders" className="font-medium text-gray-600 hover:text-gray-700">
+                    <NavLink to="/orders" activeClassName="active" className="font-medium text-gray-600 hover:text-gray-700">
                       Orders
-                    </Link>
+                    </NavLink>
                   </li>
                   <li className="p-5">
-                    <Link to="/cart" className="font-medium text-gray-600 hover:text-gray-700">
+                    <NavLink to="/cart" activeClassName="active" className="font-medium text-gray-600 hover:text-gray-700">
                       Cart
-                    </Link>
+                    </NavLink>
                   </li>
                   <li className="p-5">
                     <button
@@ -59,15 +59,23 @@ export function Header2({ username, token }) {
                 </>
               ) : (
                 <li className="p-5">
-                  <Link to="/login" className="font-medium text-gray-600 hover:text-gray-700">
+                  <NavLink to="/login" activeClassName="active" className="font-medium text-gray-600 hover:text-gray-700">
                     Login
-                  </Link>
+                  </NavLink>
                 </li>
               )}
             </ul>
           </div>
         </div>
       </div>
+      <style>
+        {`
+          .active {
+            color: red;
+            text-decoration: underline;
+          }
+        `}
+      </style>
     </section>
   );
 }

@@ -118,6 +118,7 @@ export const Orders = () => {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <div style={{ marginBottom: '25px', fontSize: '17px' }}>
                                         <OrderTitle style={{ marginBottom: '55px', fontSize: '16px' }}>Order ID: {order.id}</OrderTitle>
+                                        <OrderText>Address: {order.deliveryAddress}</OrderText>
                                     </div>
                                     <div style={{ marginBottom: '30px', fontSize: '14px' }}>Date and Time: {order.dateTime}</div>
                                     <div>
@@ -161,9 +162,7 @@ export const Orders = () => {
                                 <hr style={{ margin: ' 0' }} />
                             </div>
 
-                            <div>
-                                {/* Footer */}
-                            </div>
+
                         </OrderCard>
                     ))
                 ) : (

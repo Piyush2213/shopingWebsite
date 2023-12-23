@@ -2,10 +2,7 @@ package com.eCommercoal.eCommercialWeb.controller;
 
 import com.eCommercoal.eCommercialWeb.entity.*;
 import com.eCommercoal.eCommercialWeb.exception.ExistsException;
-import com.eCommercoal.eCommercialWeb.repository.CartRepository;
-import com.eCommercoal.eCommercialWeb.repository.CustomerRepository;
-import com.eCommercoal.eCommercialWeb.repository.OrderRepository;
-import com.eCommercoal.eCommercialWeb.repository.ProductRepository;
+import com.eCommercoal.eCommercialWeb.repository.*;
 import com.eCommercoal.eCommercialWeb.response.OrderItemResponse;
 import com.eCommercoal.eCommercialWeb.response.OrderResponse;
 import com.eCommercoal.eCommercialWeb.service.CartService;
@@ -21,7 +18,6 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/orders")
@@ -31,18 +27,20 @@ public class OrderController {
     private final OrderRepository orderRepository;
     private final CartRepository cartRepository;
     private final CustomerRepository customerRepository;
+    private final AddressRepository addressRepository;
     private final OrderService orderService;
     private final CartService cartService;
     @Autowired
     private ProductRepository productRepository;
 
     @Autowired
-    public OrderController(OrderRepository orderRepository, CartRepository cartRepository, CustomerRepository customerRepository, OrderService orderService, CartService cartService) {
+    public OrderController(OrderRepository orderRepository, CartRepository cartRepository, CustomerRepository customerRepository, OrderService orderService, CartService cartService, AddressRepository addressRepository) {
         this.orderRepository = orderRepository;
         this.cartRepository = cartRepository;
         this.customerRepository = customerRepository;
         this.orderService = orderService;
         this.cartService = cartService;
+        this.addressRepository = addressRepository;
     }
     private Customer getUserFromToken(String token) {
         Customer customer = customerRepository.findByToken(token);
@@ -53,10 +51,14 @@ public class OrderController {
     }
 
 
+
+
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(HttpServletRequest req) {
+    public ResponseEntity<OrderResponse> createOrder(@RequestBody Address address, HttpServletRequest req) {
         String token = req.getHeader("Authorization");
         Customer customer = getUserFromToken(token);
+
+
 
         if (customer == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
@@ -67,9 +69,26 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
+
+
+
+        Address orderAddress = new Address();
+        orderAddress.setHouseNo(address.getHouseNo());
+        orderAddress.setStreet(address.getStreet());
+        orderAddress.setCity(address.getCity());
+        orderAddress.setPin(address.getPin());
+        orderAddress.setCustomer(customer);
+
+
+
+        Address savedAddress = addressRepository.save(orderAddress);
+
+
         Order order = new Order();
         order.setCustomer(customer);
         order.setTotalAmount(BigDecimal.ZERO);
+        order.setDeliveryAddress(savedAddress);
+
 
         List<OrderItem> orderItems = new ArrayList<>();
         BigDecimal totalAmount = BigDecimal.ZERO;
@@ -91,9 +110,13 @@ public class OrderController {
         Clock cl = Clock.systemUTC();
         order.setDateTime(LocalDateTime.now(cl));
 
+
+
         Order createdOrder = orderRepository.save(order);
 
+
         cartRepository.deleteAll(cartItems);
+
 
         List<OrderItemResponse> orderedProductsList = new ArrayList<>();
         for (OrderItem orderItem : createdOrder.getOrderItems()) {
@@ -109,9 +132,11 @@ public class OrderController {
         response.setCustomerId(createdOrder.getCustomer().getId());
         response.setOrderItems(orderedProductsList);
         response.setDateTime(createdOrder.getDateTime());
+        response.setDeliveryAddress(savedAddress);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
 
 
 

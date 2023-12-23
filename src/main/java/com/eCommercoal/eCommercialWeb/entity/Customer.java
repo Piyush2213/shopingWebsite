@@ -2,6 +2,9 @@ package com.eCommercoal.eCommercialWeb.entity;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "customers")
 public class Customer {
@@ -27,6 +30,9 @@ public class Customer {
 
     @Column(name = "address")
     private String address;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Address> addresses = new ArrayList<>();
 
 
 

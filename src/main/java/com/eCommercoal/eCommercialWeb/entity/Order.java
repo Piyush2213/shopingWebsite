@@ -28,6 +28,21 @@ public class Order {
     @Column(name = "date_time")
     private LocalDateTime dateTime;
 
+    @ManyToOne
+    @JoinColumn(name = "delivery_address_id")
+    private Address deliveryAddress;
+
+
+    public Order(Address deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
+
+    public Address getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
@@ -73,14 +88,17 @@ public class Order {
     public Order(LocalDateTime dateTime, Integer id,  Customer customer, List<OrderItem> orderItems, BigDecimal totalAmount) {
         this.dateTime = dateTime;
         this.id = id;
-
         this.customer = customer;
         this.orderItems = orderItems;
         this.totalAmount = totalAmount;
+
 
     }
     public Order(){};
     public void setCartItems(List<OrderItem> cartItems) {
         this.orderItems = cartItems;
+    }
+    public void setDeliveryAddress(Address deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
     }
 }

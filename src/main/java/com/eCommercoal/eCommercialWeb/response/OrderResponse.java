@@ -1,5 +1,7 @@
 package com.eCommercoal.eCommercialWeb.response;
 
+import com.eCommercoal.eCommercialWeb.entity.Address;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +15,16 @@ public class OrderResponse {
     private List<OrderItemResponse> orderItems;
     private LocalDateTime dateTime;
     private List<Long> productIds;
+    private Address deliveryAddress;
+
+
+    public Address getDeliveryAddress() {
+        return deliveryAddress;
+    }
+
+    public void setDeliveryAddress(Address deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
+    }
 
     public List<Long> getProductIds() {
         return productIds;
@@ -74,6 +86,9 @@ public class OrderResponse {
         this.productIds = productIds;
 
 
+    }
+    public OrderResponse(Address deliveryAddress) {
+        this.deliveryAddress = deliveryAddress;
     }
 
     public OrderResponse(){};
