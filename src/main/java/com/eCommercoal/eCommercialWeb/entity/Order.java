@@ -1,13 +1,22 @@
 package com.eCommercoal.eCommercialWeb.entity;
 
+import com.eCommercoal.eCommercialWeb.model.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 @Table(name = "orders")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +40,9 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "delivery_address_id")
     private Address deliveryAddress;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus = OrderStatus.Pending;
 
 
     public Order(Address deliveryAddress) {
@@ -94,7 +106,7 @@ public class Order {
 
 
     }
-    public Order(){};
+
     public void setCartItems(List<OrderItem> cartItems) {
         this.orderItems = cartItems;
     }

@@ -1,6 +1,7 @@
 package com.eCommercoal.eCommercialWeb.response;
 
 import com.eCommercoal.eCommercialWeb.entity.Address;
+import com.eCommercoal.eCommercialWeb.model.OrderStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,6 +17,15 @@ public class OrderResponse {
     private LocalDateTime dateTime;
     private List<Long> productIds;
     private Address deliveryAddress;
+    private OrderStatus orderStatus;
+
+    public OrderStatus getOrderStatus() {
+        return orderStatus;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 
 
     public Address getDeliveryAddress() {
@@ -76,9 +86,9 @@ public class OrderResponse {
         this.customerId = customerId;
     }
 
-    public OrderResponse(int id,  BigDecimal totalAmount, int customerId, List<OrderItemResponse> orderItems, LocalDateTime dateTime, List<Long> productIds) {
+    public OrderResponse(int id, OrderStatus orderStatus,  BigDecimal totalAmount, int customerId, List<OrderItemResponse> orderItems, LocalDateTime dateTime, List<Long> productIds) {
         this.id = id;
-
+        this.orderStatus = orderStatus;
         this.totalAmount = totalAmount;
         this.customerId = customerId;
         this.orderItems = orderItems;

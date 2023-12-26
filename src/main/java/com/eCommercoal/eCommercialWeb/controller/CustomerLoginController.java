@@ -68,6 +68,7 @@ public class CustomerLoginController {
 
                 .setSubject(customer.getEmail())
                 .claim("name", customer.getFirstName())
+                .claim("role", "customer")
                 .signWith(SignatureAlgorithm.HS512, keyBytes)
                 .compact();
 

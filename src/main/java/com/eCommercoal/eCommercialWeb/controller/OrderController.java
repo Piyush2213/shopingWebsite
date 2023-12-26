@@ -2,11 +2,17 @@ package com.eCommercoal.eCommercialWeb.controller;
 
 import com.eCommercoal.eCommercialWeb.entity.*;
 import com.eCommercoal.eCommercialWeb.exception.ExistsException;
+import com.eCommercoal.eCommercialWeb.model.OrderStatus;
 import com.eCommercoal.eCommercialWeb.repository.*;
 import com.eCommercoal.eCommercialWeb.response.OrderItemResponse;
 import com.eCommercoal.eCommercialWeb.response.OrderResponse;
 import com.eCommercoal.eCommercialWeb.service.CartService;
 import com.eCommercoal.eCommercialWeb.service.OrderService;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,8 +56,6 @@ public class OrderController {
         }
         throw new ExistsException("Invalid token or user not found.");
     }
-
-
 
 
     @PostMapping
@@ -132,6 +137,7 @@ public class OrderController {
         response.setCustomerId(createdOrder.getCustomer().getId());
         response.setOrderItems(orderedProductsList);
         response.setDateTime(createdOrder.getDateTime());
+        response.setOrderStatus(OrderStatus.Pending);
         response.setDeliveryAddress(savedAddress);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -176,6 +182,8 @@ public class OrderController {
             orderResponse.setCustomerId(order.getCustomer().getId());
             orderResponse.setOrderItems(orderedProductsList);
             orderResponse.setDateTime(order.getDateTime());
+            orderResponse.setOrderStatus(order.getOrderStatus());
+            orderResponse.setDeliveryAddress(order.getDeliveryAddress());
 
             orderResponses.add(orderResponse);
         }

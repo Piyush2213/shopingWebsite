@@ -1,8 +1,15 @@
 package com.eCommercoal.eCommercialWeb.entity;
 
+import com.eCommercoal.eCommercialWeb.model.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+
+
 
 @Entity
 @Table(name = "order_items")
@@ -14,6 +21,7 @@ public class OrderItem {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonIgnore
     private Order order;
 
     @Column(name = "product_id")
@@ -24,6 +32,10 @@ public class OrderItem {
 
     @Column(name = "amount")
     private BigDecimal amount;
+
+
+
+
 
     public Integer getId() {
         return id;
