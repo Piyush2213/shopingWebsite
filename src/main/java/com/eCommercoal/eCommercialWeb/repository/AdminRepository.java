@@ -18,6 +18,6 @@ public interface AdminRepository extends JpaRepository<Admin, Integer> {
     @Query("UPDATE Admin c SET c.token = ?2 WHERE c.id = ?1")
     int updateToken(int id, String token);
 
-    @Query("SELECT c FROM Customer c WHERE c.token = ?1")
-    Customer findByToken(String token);
+    @Query("SELECT c FROM Admin c WHERE c.token = ?1")
+    Admin findByToken(String token);
 }

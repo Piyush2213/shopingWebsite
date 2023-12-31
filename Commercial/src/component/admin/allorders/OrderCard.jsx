@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import base_url from '../baseUrl/BaseUrl';
+import base_url from '../../baseUrl/BaseUrl';
 import Cookies from 'js-cookie';
 
 const OrderCard = ({ order, onUpdateStatus }) => {

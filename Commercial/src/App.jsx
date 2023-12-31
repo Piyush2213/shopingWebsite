@@ -10,8 +10,8 @@ import { AboutUs } from './component/about/AboutUs'
 import { Cart } from './component/cart/Cart'
 import {Orders} from './component/orders/Orders'
 import AddressEntry from './component/address/AddressEntry'
-import { AdminLogin } from './component/login/AdminLogin'
-import { OrdersList } from './component/allorders/OrdersList'
+import { OrdersList } from './component/admin/allorders/OrdersList'
+import { AdminLogin } from './component/admin/AdminLogin'
 
 function App() {
 

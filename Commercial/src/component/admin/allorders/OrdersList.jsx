@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import base_url from '../baseUrl/BaseUrl';
+import base_url from '../../baseUrl/BaseUrl';
 import Cookies from 'js-cookie';
-import { Footer } from '../footer/Footer';
-import { Header2 } from '../header2/header2';
+import { Footer } from '../../footer/Footer';
+import { Header2 } from '../../header2/header2';
 import { useNavigate } from 'react-router-dom';
 import OrderCard from './OrderCard';
+import { AdminHeader } from '../header/AdminHeader';
 
 export const OrdersList = () => {
   const [orders, setOrders] = useState([]);
   const token = Cookies.get('token');
+  const username = Cookies.get('Name');
   const navigate = useNavigate();
 
   const fetchOrders = async () => {
@@ -40,7 +42,7 @@ export const OrdersList = () => {
 
   return (
     <div>
-      <Header2 />
+      <AdminHeader token={token} username={username} />
 
       <div className="mx-auto grid w-full max-w-7xl items-center space-y-4 px-2 py-10 md:grid-cols-2 md:gap-6 md:space-y-0 lg:grid-cols-4">
         {orders.map((order) => (

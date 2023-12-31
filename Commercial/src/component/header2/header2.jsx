@@ -4,13 +4,29 @@ import Cookies from 'js-cookie';
 
 export function Header2({ username, token }) {
   const handleLogout = () => {
+    const userRole = Cookies.get('userRole');
+    console.log("userRole is " + userRole);
     Cookies.remove('token');
     Cookies.remove('firstName');
+    if(userRole === 'admin'){
+      window.location.href = '/admin-login';
+    }
+    else{
+      window.location.href = '/login';
+    }
+    
+  };
+
+  const handleAdminLogin = () => {
+    window.location.href = '/admin-login';
+  };
+
+  const handleCustomerLogin = () => {
     window.location.href = '/login';
   };
 
   return (
-    <section className="relative overflow-hidden bg-white py-8">
+    <section className="relative overflow-hidden bg-white py-8 mb-4">
       <div className="container relative z-10 mx-auto px-4">
         <div className="-m-8 flex flex-wrap items-center justify-between">
           <div className="w-auto p-8">
@@ -58,11 +74,24 @@ export function Header2({ username, token }) {
                   </li>
                 </>
               ) : (
-                <li className="p-5">
-                  <NavLink to="/login" activeClassName="active" className="font-medium text-gray-600 hover:text-gray-700">
-                    Login
-                  </NavLink>
-                </li>
+                <>
+                  <li className="p-5">
+                    <button
+                      className="font-medium text-gray-600 hover:text-gray-700"
+                      onClick={handleCustomerLogin}
+                    >
+                      Customer Login
+                    </button>
+                  </li>
+                  <li className="p-5">
+                    <button
+                      className="font-medium text-gray-600 hover:text-gray-700"
+                      onClick={handleAdminLogin}
+                    >
+                      Admin Login
+                    </button>
+                  </li>
+                </>
               )}
             </ul>
           </div>

@@ -251,7 +251,6 @@ export function Products() {
   return (
     <div>
       <Header2 username={username} token={token} />
-
       <SearchBar
         searchTerm={searchTerm}
         onSearch={handleSearch}

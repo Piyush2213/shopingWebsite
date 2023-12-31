@@ -6,12 +6,14 @@ import axios from 'axios';
 import base_url from '../baseUrl/BaseUrl';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { AdminHeader } from './header/AdminHeader';
 
 export function AdminLogin() {
     useEffect(() => {
         document.title = "Admin";
     }, []);
-
+    const token = Cookies.get('token');
+    const username = Cookies.get('Name');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -30,6 +32,7 @@ export function AdminLogin() {
                 setErrorMessage('');
                 Cookies.set('token', data.token);
                 Cookies.set('Name', data.name);
+                Cookies.set('userRole', data.role);
                 navigate('/OrdersList');
             } else {
                 setErrorMessage('Invalid email or password. Please try again.');
@@ -64,7 +67,7 @@ export function AdminLogin() {
 
     return (
         <div>
-            <Header />
+            <AdminHeader username={username} token={token} />
 
             <section>
                 <div className="flex items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24">

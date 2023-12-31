@@ -26,4 +26,6 @@ public class Admin {
     private String password;
     @Column(name = "token")
     private String token;
+    @Column(name = "role")
+    private String role;
 }
